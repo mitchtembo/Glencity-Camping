@@ -1,4 +1,5 @@
 import React from 'react';
+import BookingWidget from '../components/BookingWidget';
 
 const HomePage = () => {
   return (
@@ -10,19 +11,7 @@ const HomePage = () => {
             <h1 className="text-white text-5xl font-black leading-tight tracking-[-0.033em] md:text-6xl">Escape to Glencity Camping Site</h1>
             <p className="text-white text-base font-light leading-relaxed md:text-lg">Experience the tranquility of nature with our luxurious chalets, cozy dormitories, and exciting activities. Book your stay today and create unforgettable memories.</p>
           </div>
-          <form className="mt-8 flex flex-col sm:flex-row items-center gap-3 p-4 bg-white/90 backdrop-blur-sm rounded-xl shadow-lg w-full max-w-xl">
-            <div className="relative flex-grow w-full sm:w-auto">
-              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-[#4e8397]">
-                <svg fill="currentColor" height="20px" viewBox="0 0 256 256" width="20px" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"></path>
-                </svg>
-              </div>
-              <input className="form-input w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#0e171b] focus:outline-none focus:ring-2 focus:ring-[#19abe5] border border-[#d0e0e7] bg-white h-12 placeholder:text-[#6b7f87] pl-10 pr-4 text-sm font-normal leading-normal md:text-base" placeholder="Search accommodations..." type="text" />
-            </div>
-            <button className="flex w-full sm:w-auto min-w-[100px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-6 bg-[#19abe5] text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-[#138ac2] transition-colors">
-              <span className="truncate">Search</span>
-            </button>
-          </form>
+          <BookingWidget />
         </div>
       </section>
       <section className="px-6 md:px-10 lg:px-20 py-12">
