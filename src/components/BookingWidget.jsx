@@ -1,37 +1,111 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Search } from 'lucide-react'; // Assuming Search is an icon
 
 const BookingWidget = () => {
+  const [searchData, setSearchData] = useState({
+    checkIn: '',
+    checkOut: '',
+    guests: '',
+  });
+
+  const handleSearch = () => {
+    // Placeholder for search functionality
+    console.log('Search data:', searchData);
+    // TODO: Implement actual search logic or navigation
+  };
+
   return (
-    <div className="mt-8 flex flex-col sm:flex-row items-center gap-3 p-4 bg-white/90 backdrop-blur-sm rounded-xl shadow-lg w-full max-w-xl">
-      <div className="relative flex-grow w-full sm:w-auto">
-        <label htmlFor="checkin-date" className="block text-sm font-medium text-gray-700">Check-in Date</label>
-        <input
-          type="date"
-          id="checkin-date"
-          className="form-input w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#0e171b] focus:outline-none focus:ring-2 focus:ring-[#19abe5] border border-[#d0e0e7] bg-white h-12 placeholder:text-[#6b7f87] px-4 text-sm font-normal leading-normal md:text-base"
-        />
+    <div className="bg-white rounded-2xl shadow-2xl p-8 text-gray-800 max-w-4xl mx-auto">
+      <h2 className="text-2xl font-semibold mb-6 text-forest"> {/* text-forest might be custom */}
+        Book Your Stay
+      </h2>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div>
+          <Label
+            htmlFor="checkin"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
+            Check-in
+          </Label>
+          <Input
+            id="checkin"
+            type="date"
+            value={searchData.checkIn}
+            onChange={(e) =>
+              setSearchData({ ...searchData, checkIn: e.target.value })
+            }
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forest focus:border-transparent" // custom styling
+            min={new Date().toISOString().split("T")[0]}
+          />
+        </div>
+        <div>
+          <Label
+            htmlFor="checkout"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
+            Check-out
+          </Label>
+          <Input
+            id="checkout"
+            type="date"
+            value={searchData.checkOut}
+            onChange={(e) =>
+              setSearchData({ ...searchData, checkOut: e.target.value })
+            }
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forest focus:border-transparent" // custom styling
+            min={
+              searchData.checkIn ||
+              new Date().toISOString().split("T")[0]
+            }
+          />
+        </div>
+        <div>
+          <Label
+            htmlFor="guests"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
+            Guests
+          </Label>
+          <Select
+            value={searchData.guests}
+            onValueChange={(value) =>
+              setSearchData({ ...searchData, guests: value })
+            }
+          >
+            <SelectTrigger className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forest focus:border-transparent"> {/* custom styling */}
+              <SelectValue placeholder="Select guests" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="1">1 Guest</SelectItem>
+              <SelectItem value="2">2 Guests</SelectItem>
+              <SelectItem value="3">3 Guests</SelectItem>
+              <SelectItem value="4">4 Guests</SelectItem>
+              <SelectItem value="5">5 Guests</SelectItem>
+              <SelectItem value="6">6+ Guests</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="flex items-end">
+          <Button
+            onClick={handleSearch}
+            className="w-full bg-sunset text-white py-3 px-6 rounded-lg hover:bg-orange-600 transition-colors font-semibold" // custom styling, bg-sunset might be custom
+            disabled={!searchData.checkIn || !searchData.checkOut}
+          >
+            <Search className="w-4 h-4 mr-2" />
+            Search
+          </Button>
+        </div>
       </div>
-      <div className="relative flex-grow w-full sm:w-auto">
-        <label htmlFor="checkout-date" className="block text-sm font-medium text-gray-700">Check-out Date</label>
-        <input
-          type="date"
-          id="checkout-date"
-          className="form-input w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#0e171b] focus:outline-none focus:ring-2 focus:ring-[#19abe5] border border-[#d0e0e7] bg-white h-12 placeholder:text-[#6b7f87] px-4 text-sm font-normal leading-normal md:text-base"
-        />
-      </div>
-      <div className="relative flex-grow w-full sm:w-auto">
-        <label htmlFor="guests" className="block text-sm font-medium text-gray-700">Guests</label>
-        <input
-          type="number"
-          id="guests"
-          min="1"
-          className="form-input w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#0e171b] focus:outline-none focus:ring-2 focus:ring-[#19abe5] border border-[#d0e0e7] bg-white h-12 placeholder:text-[#6b7f87] px-4 text-sm font-normal leading-normal md:text-base"
-          placeholder="Number of guests"
-        />
-      </div>
-      <button className="flex w-full sm:w-auto min-w-[120px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-6 bg-[#19abe5] text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-[#138ac2] transition-colors mt-4 sm:mt-0 self-end">
-        <span className="truncate">Book Now</span>
-      </button>
     </div>
   );
 };

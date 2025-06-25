@@ -1,1 +1,60 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%; /* slate-900 */
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%; /* slate-950 */
+    --primary-foreground: 0 0% 98%; /* slate-50 */
+    --secondary: 240 4.8% 95.9%; /* slate-100 */
+    --secondary-foreground: 240 5.9% 10%; /* slate-950 */
+    --muted: 240 4.8% 95.9%; /* slate-100 */
+    --muted-foreground: 240 3.8% 46.1%; /* slate-500 */
+    --accent: 240 4.8% 95.9%; /* slate-100 */
+    --accent-foreground: 240 5.9% 10%; /* slate-950 */
+    --destructive: 0 84.2% 60.2%; /* red-500 */
+    --destructive-foreground: 0 0% 98%; /* slate-50 */
+    --border: 240 5.9% 90%; /* slate-200 */
+    --input: 240 5.9% 90%; /* slate-200 */
+    --ring: 240 5.9% 10%; /* slate-950 */
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 240 10% 3.9%; /* slate-950 */
+    --foreground: 0 0% 98%; /* slate-50 */
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%; /* slate-50 */
+    --primary-foreground: 240 5.9% 10%; /* slate-950 */
+    --secondary: 240 3.7% 15.9%; /* slate-800 */
+    --secondary-foreground: 0 0% 98%; /* slate-50 */
+    --muted: 240 3.7% 15.9%; /* slate-800 */
+    --muted-foreground: 240 5% 64.9%; /* slate-400 */
+    --accent: 240 3.7% 15.9%; /* slate-800 */
+    --accent-foreground: 0 0% 98%; /* slate-50 */
+    --destructive: 0 62.8% 30.6%; /* red-900 */
+    --destructive-foreground: 0 0% 98%; /* slate-50 */
+    --border: 240 3.7% 15.9%; /* slate-800 */
+    --input: 240 3.7% 15.9%; /* slate-800 */
+    --ring: 240 4.9% 83.9%; /* slate-300 */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1; /* Recommended by shadcn/ui */
+  }
+}
