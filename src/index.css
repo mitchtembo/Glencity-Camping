@@ -51,7 +51,8 @@
 
 @layer base {
   body {
-    @apply bg-background text-foreground;
+    background-color: rgb(var(--background));
+    color: rgb(var(--foreground));
     font-feature-settings: "rlig" 1, "calt" 1; /* Recommended by shadcn/ui */
   }
 }
