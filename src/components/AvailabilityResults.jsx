@@ -1,6 +1,14 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const AvailabilityResults = ({ results }) => {
+const AvailabilityResults = ({ results, checkIn, checkOut }) => { // Add checkIn and checkOut props
+  const navigate = useNavigate();
+
+  const handleBookNow = (accommodationId) => {
+    // Navigate to the booking page with accommodation ID, check-in, and check-out dates
+    navigate(`/booking/${accommodationId}`, { state: { checkIn, checkOut } });
+  };
+
   if (results.length === 0) {
     return (
       <section className="px-6 md:px-10 lg:px-20 py-12">
@@ -26,7 +34,7 @@ const AvailabilityResults = ({ results }) => {
                 </p>
                 <p className="text-lg font-semibold text-[#b2d7e5] mt-3">${acc.price} <span className="text-sm font-normal text-gray-500">/ night</span></p>
                 <button
-                  onClick={() => alert('This would initiate the booking process.')}
+                  onClick={() => handleBookNow(acc.id)} // Updated onClick handler
                   className="mt-4 flex items-center justify-center gap-2 w-full h-11 px-6 bg-[#b2d7e5] text-white text-sm font-bold rounded-lg hover:bg-[#a1c3d0] transition-colors"
                 >
                   <span className="material-icons-outlined text-lg">shopping_cart</span>
