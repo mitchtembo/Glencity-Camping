@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 const Navbar = () => {
   return (
@@ -11,11 +11,47 @@ const Navbar = () => {
         <h2 className="text-slate-900 text-xl font-bold leading-tight tracking-[-0.015em]">Glencity Camping Site</h2>
       </div>
       <nav className="flex flex-1 justify-end gap-8 items-center">
-        <Link className="text-slate-700 hover:text-[#b2d7e5] text-sm font-medium leading-normal transition-colors" to="/">Home</Link>
-        <Link className="text-slate-700 hover:text-[#b2d7e5] text-sm font-medium leading-normal transition-colors" to="/accommodation">Accommodation</Link>
-        <Link className="text-[#b2d7e5] text-sm font-bold leading-normal" to="/activities">Activities</Link>
-        <Link className="text-slate-700 hover:text-[#b2d7e5] text-sm font-medium leading-normal transition-colors" to="/contact">Contact</Link>
-        <Link className="text-slate-700 hover:text-[#b2d7e5] text-sm font-medium leading-normal transition-colors" to="/bookings">My Bookings</Link>
+        <NavLink
+          to="/"
+          className={({ isActive }) =>
+            `text-sm font-medium leading-normal transition-colors ${isActive ? 'text-[#b2d7e5] font-bold' : 'text-slate-700 hover:text-[#b2d7e5]'}`
+          }
+          end
+        >
+          Home
+        </NavLink>
+        <NavLink
+          to="/accommodation"
+          className={({ isActive }) =>
+            `text-sm font-medium leading-normal transition-colors ${isActive ? 'text-[#b2d7e5] font-bold' : 'text-slate-700 hover:text-[#b2d7e5]'}`
+          }
+        >
+          Accommodation
+        </NavLink>
+        <NavLink
+          to="/activities"
+          className={({ isActive }) =>
+            `text-sm font-medium leading-normal transition-colors ${isActive ? 'text-[#b2d7e5] font-bold' : 'text-slate-700 hover:text-[#b2d7e5]'}`
+          }
+        >
+          Activities
+        </NavLink>
+        <NavLink
+          to="/contact"
+          className={({ isActive }) =>
+            `text-sm font-medium leading-normal transition-colors ${isActive ? 'text-[#b2d7e5] font-bold' : 'text-slate-700 hover:text-[#b2d7e5]'}`
+          }
+        >
+          Contact
+        </NavLink>
+        <NavLink
+          to="/bookings"
+          className={({ isActive }) =>
+            `text-sm font-medium leading-normal transition-colors ${isActive ? 'text-[#b2d7e5] font-bold' : 'text-slate-700 hover:text-[#b2d7e5]'}`
+          }
+        >
+          My Bookings
+        </NavLink>
         <button className="flex min-w-[100px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-6 bg-[#b2d7e5] text-slate-900 text-sm font-bold leading-normal tracking-[0.015em] hover:bg-opacity-80 transition-colors">
           <span className="truncate">Book Now</span>
         </button>
