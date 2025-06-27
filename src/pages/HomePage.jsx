@@ -30,13 +30,15 @@ const HomePage = () => {
     <main className="flex-1">
       <section className="relative">
         <div className="absolute inset-0 bg-black opacity-40 z-0"></div>
-        <div className="min-h-[560px] flex flex-col items-center justify-center bg-cover bg-center bg-no-repeat p-8 relative z-10" style={{backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuD0buucPGE-DXXKYOxp3f9oTnRuK8ySkgSBwnFS5hKslI-D2h1ZTbn0X0LqF1u8expkHv4KfNzI4NWxGQIE_6IGPwIndRdBZWEbfJYtVOfYryP8i6FeNw_kYePHCe7CIuEXn4wVTz95H_TZRZ4cG72qybJrY6Fa0sk93fC8E5Xb_vcVdhVAv6l1v1u2cXvc0jIvGOhZoGt0RL9o--mCvynR2QTXFpORmlfVsKkg5jOQPTO8LCrUopIfyki5BUZokj_xW0e-sJdQaOhU")'}}>
+        <div className="min-h-[560px] flex flex-col items-center justify-center bg-cover bg-center bg-no-repeat p-8 relative z-10" style={{backgroundImage: 'url("https://images.unsplash.com/photo-1671832757677-40b3480cc169?q=80&w=1487&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")'}}>
           <div className="flex flex-col gap-4 text-center max-w-3xl">
             <h1 className="text-white text-5xl font-black leading-tight tracking-[-0.033em] md:text-6xl">Escape to Glencity Camping Site</h1>
             <p className="text-white text-base font-light leading-relaxed md:text-lg">Experience the tranquility of nature with our luxurious chalet rentals. Book your stay today and create unforgettable memories.</p>
           </div>
-          <div className="w-full max-w-md mt-8">
-            <BookingWidget onSearch={handleSearch} />
+          <div className="w-full flex justify-center items-center mt-8">
+            <div className="bg-white bg-opacity-95 rounded-2xl shadow-2xl w-full max-w-md md:max-w-3xl px-4 py-5 md:px-8 md:py-8">
+              <BookingWidget onSearch={handleSearch} />
+            </div>
           </div>
         </div>
       </section>
