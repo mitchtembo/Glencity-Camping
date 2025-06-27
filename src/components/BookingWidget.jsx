@@ -1,77 +1,67 @@
 import React, { useState } from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label"; // Import Label
-import { Search, Calendar, Users } from 'lucide-react'; // Import Users icon
+import { Search, Calendar } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import accommodations from '../data/accommodations.json';
 
-const BookingWidget = ({ onSearch }) => {
+function isBooked(acc, checkIn, checkOut) {
+  if (!checkIn || !checkOut) return false;
+  const checkInDate = new Date(checkIn);
+  const checkOutDate = new Date(checkOut);
+  return acc.bookings.some(b => {
+    const bookedFrom = new Date(b.from);
+    const bookedTo = new Date(b.to);
+    return (
+      (checkInDate <= bookedTo && checkOutDate >= bookedFrom)
+    );
+  });
+}
+
+const BookingWidget = () => {
   const [checkIn, setCheckIn] = useState('');
   const [checkOut, setCheckOut] = useState('');
-  const [guests, setGuests] = useState(1); // Default to 1 guest
+  const navigate = useNavigate();
 
   const handleSearch = () => {
-    // Basic validation
-    if (!checkIn || !checkOut) {
-      alert("Please select check-in and check-out dates.");
-      return;
-    }
-    if (new Date(checkOut) <= new Date(checkIn)) {
-      alert("Check-out date must be after check-in date.");
-      return;
-    }
-    if (guests < 1) {
-      alert("Number of guests must be at least 1.");
-      return;
-    }
-    onSearch({ checkIn, checkOut, guests: parseInt(guests, 10) });
+    // Mark accommodations as booked or available for the selected dates
+    const results = accommodations.map(acc => ({
+      ...acc,
+      isBooked: isBooked(acc, checkIn, checkOut)
+    }));
+    navigate('/accommodation', { state: { results, checkIn, checkOut } });
   };
 
   return (
-    <div className="bg-white/80 backdrop-blur-sm rounded-lg shadow-lg p-4 max-w-3xl mx-auto"> {/* Increased max-w */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end"> {/* Changed to 4 cols */}
+    <div className="bg-white/80 backdrop-blur-sm rounded-lg shadow-lg p-4 max-w-2xl mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
         <div>
-          <Label htmlFor="check-in" className="block text-sm font-medium text-gray-700 mb-1">Check-in</Label>
+          <label htmlFor="check-in" className="block text-sm font-medium text-gray-700 mb-1">Check-in</label>
           <div className="relative">
-            <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" />
+            <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
             <Input
               id="check-in"
               type="date"
               value={checkIn}
               onChange={(e) => setCheckIn(e.target.value)}
               className="pl-10 w-full h-12 rounded-md border-gray-300"
-              min={new Date().toISOString().split("T")[0]} // Prevent selecting past dates
             />
           </div>
         </div>
         <div>
-          <Label htmlFor="check-out" className="block text-sm font-medium text-gray-700 mb-1">Check-out</Label>
+          <label htmlFor="check-out" className="block text-sm font-medium text-gray-700 mb-1">Check-out</label>
           <div className="relative">
-            <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" />
+            <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
             <Input
               id="check-out"
               type="date"
               value={checkOut}
               onChange={(e) => setCheckOut(e.target.value)}
               className="pl-10 w-full h-12 rounded-md border-gray-300"
-              min={checkIn || new Date().toISOString().split("T")[0]} // Prevent selecting dates before check-in
             />
           </div>
         </div>
-        <div>
-          <Label htmlFor="guests" className="block text-sm font-medium text-gray-700 mb-1">Guests</Label>
-          <div className="relative">
-            <Users className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" />
-            <Input
-              id="guests"
-              type="number"
-              value={guests}
-              onChange={(e) => setGuests(e.target.value)}
-              min="1"
-              className="pl-10 w-full h-12 rounded-md border-gray-300"
-            />
-          </div>
-        </div>
-        <Button onClick={handleSearch} className="h-12 px-8 bg-[#19abe5] hover:bg-[#138ac2] text-white md:col-span-1"> {/* Adjusted button span */}
+        <Button onClick={handleSearch} className="h-12 px-8 bg-[#19abe5] hover:bg-[#138ac2] text-white">
           <Search className="w-4 h-4 mr-2" />
           Search
         </Button>

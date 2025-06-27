@@ -20,7 +20,7 @@ const HomePage = () => {
     });
 
     if (available.length > 0) {
-      navigate('/accommodation', { state: { results: available, checkInDate: checkIn, checkOutDate: checkOut } });
+      navigate('/accommodation', { state: { results: available } });
     } else {
       alert('No accommodations available for the selected dates.');
     }
