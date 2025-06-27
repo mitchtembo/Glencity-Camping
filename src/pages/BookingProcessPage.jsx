@@ -45,24 +45,18 @@ const BookingProcessPage = () => {
     // 5. Send confirmation email
 
     // Simulate adding booking to the accommodation in memory
-    // This won't persist as accommodations are reloaded from JSON on each app load/navigation.
-    // For a real app, this would be an API call to a backend.
     const updatedAccommodation = {
       ...accommodation,
       bookings: [
-        ...(accommodation.bookings || []), // Ensure bookings array exists
+        ...(accommodation.bookings || []),
         {
           from: checkInDate,
           to: checkOutDate,
-          user: email, // Store some user identifier
-          // In a real app, you'd have a proper booking ID, user ID, etc.
+          user: email,
         }
       ]
     };
 
-    // This log demonstrates the intended update.
-    // In a real app with global state management (Redux, Zustand, Context with useReducer),
-    // you might dispatch an action here to update the state.
     console.log('Simulated Booking:', {
       accommodationId: updatedAccommodation.id,
       accommodationName: updatedAccommodation.name,
@@ -71,20 +65,15 @@ const BookingProcessPage = () => {
       checkIn: checkInDate,
       checkOut: checkOutDate,
       pricePerNight: updatedAccommodation.price,
-      // You could calculate total price here if needed:
-      // totalPrice: calculateTotalPrice(checkInDate, checkOutDate, accommodation.price)
     });
     console.log('Updated accommodation object (in memory for this session):', updatedAccommodation);
 
-    // To make this visible in the current session if the user navigates back and forth
-    // (without a full app reload), you could try to update the original accommodations array.
-    // However, this is fragile and not a proper state management solution.
     const accommodationIndex = accommodations.findIndex(acc => acc.id === accommodation.id);
     if (accommodationIndex !== -1) {
       accommodations[accommodationIndex] = updatedAccommodation;
     }
 
-    setAccommodation(updatedAccommodation); // Update local state for current view if needed
+    setAccommodation(updatedAccommodation);
     setBookingConfirmed(true);
   };
 
