@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate, Link } from 'react-router-dom';
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -10,7 +10,9 @@ const Navbar = () => {
         <div className="flex items-center justify-center rounded-lg bg-[#b2d7e5] p-2">
           <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path d="M4 4H17.3334V17.3334H30.6666V30.6666H44V44H4V4Z" fill="currentColor"></path></svg>
         </div>
-        <h2 className="text-slate-900 text-xl font-bold leading-tight tracking-[-0.015em]">Glencity Camping Site</h2>
+        <Link to="/" className="text-slate-900 text-xl font-bold leading-tight tracking-[-0.015em] hover:text-[#19abe5] transition-colors">
+          Glencity Camping Site
+        </Link>
       </div>
       {/* Hamburger icon for mobile */}
       <button
