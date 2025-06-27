@@ -2,13 +2,34 @@ import React, { useState } from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, Calendar } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import accommodations from '../data/accommodations.json';
 
-const BookingWidget = ({ onSearch }) => {
+function isBooked(acc, checkIn, checkOut) {
+  if (!checkIn || !checkOut) return false;
+  const checkInDate = new Date(checkIn);
+  const checkOutDate = new Date(checkOut);
+  return acc.bookings.some(b => {
+    const bookedFrom = new Date(b.from);
+    const bookedTo = new Date(b.to);
+    return (
+      (checkInDate <= bookedTo && checkOutDate >= bookedFrom)
+    );
+  });
+}
+
+const BookingWidget = () => {
   const [checkIn, setCheckIn] = useState('');
   const [checkOut, setCheckOut] = useState('');
+  const navigate = useNavigate();
 
   const handleSearch = () => {
-    onSearch({ checkIn, checkOut, guests: 1 });
+    // Mark accommodations as booked or available for the selected dates
+    const results = accommodations.map(acc => ({
+      ...acc,
+      isBooked: isBooked(acc, checkIn, checkOut)
+    }));
+    navigate('/accommodation', { state: { results, checkIn, checkOut } });
   };
 
   return (

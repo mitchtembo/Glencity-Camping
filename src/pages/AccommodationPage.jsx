@@ -31,9 +31,12 @@ const AccommodationPage = () => {
                   </p>
                   <p className="text-lg font-semibold text-[#b2d7e5] mb-3">${acc.price} <span className="text-sm font-normal text-gray-500">/ night</span></p>
                 </div>
-                <button className="mt-auto flex items-center justify-center gap-2 w-full md:w-auto h-11 px-6 bg-[#b2d7e5] text-white text-sm font-bold rounded-lg hover:bg-[#a1c3d0] transition-colors">
+                <button
+                  className={`mt-auto flex items-center justify-center gap-2 w-full md:w-auto h-11 px-6 text-white text-sm font-bold rounded-lg transition-colors ${acc.isBooked ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#b2d7e5] hover:bg-[#a1c3d0]'}`}
+                  disabled={acc.isBooked}
+                >
                   <span className="material-icons-outlined text-lg">shopping_cart</span>
-                  Book Now
+                  {acc.isBooked ? 'Booked Now' : 'Book Now'}
                 </button>
               </div>
             </div>
