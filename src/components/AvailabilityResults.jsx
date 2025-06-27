@@ -1,0 +1,44 @@
+import React from 'react';
+
+const AvailabilityResults = ({ results }) => {
+  if (results.length === 0) {
+    return (
+      <section className="px-6 md:px-10 lg:px-20 py-12">
+        <div className="max-w-7xl mx-auto text-center">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">No Availability</h2>
+          <p className="text-gray-600">Unfortunately, there are no accommodations available for the selected dates or party size. Please try different dates or contact us for assistance.</p>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section className="px-6 md:px-10 lg:px-20 py-12 bg-white">
+      <div className="max-w-7xl mx-auto">
+        <h2 className="text-3xl font-bold leading-tight tracking-[-0.015em] mb-8 text-center">Available Accommodations</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {results.map(acc => (
+            <div key={acc.id} className="flex flex-col gap-4 rounded-xl overflow-hidden shadow-lg bg-white transition-transform hover:scale-105 duration-300">
+              <div className="p-5">
+                <h3 className="text-[#0e171b] text-lg font-semibold leading-normal mb-1">{acc.name}</h3>
+                <p className="text-[#4e8397] text-sm font-normal leading-relaxed">
+                  {acc.type} - Up to {acc.capacity} guests
+                </p>
+                <p className="text-lg font-semibold text-[#b2d7e5] mt-3">${acc.price} <span className="text-sm font-normal text-gray-500">/ night</span></p>
+                <button
+                  onClick={() => alert('This would initiate the booking process.')}
+                  className="mt-4 flex items-center justify-center gap-2 w-full h-11 px-6 bg-[#b2d7e5] text-white text-sm font-bold rounded-lg hover:bg-[#a1c3d0] transition-colors"
+                >
+                  <span className="material-icons-outlined text-lg">shopping_cart</span>
+                  Book Now
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default AvailabilityResults;

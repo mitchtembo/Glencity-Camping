@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 const Navbar = () => {
   return (
-    <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 px-10 py-4 shadow-sm bg-white">
+    <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 px-10 py-4 shadow-sm bg-white fixed top-0 left-0 right-0 z-50">
       <div className="flex items-center gap-4 text-slate-900">
         <div className="flex items-center justify-center rounded-lg bg-[#b2d7e5] p-2">
           <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path d="M4 4H17.3334V17.3334H30.6666V30.6666H44V44H4V4Z" fill="currentColor"></path></svg>
@@ -12,11 +12,10 @@ const Navbar = () => {
       </div>
       <nav className="flex flex-1 justify-end gap-8 items-center">
         <Link className="text-slate-700 hover:text-[#b2d7e5] text-sm font-medium leading-normal transition-colors" to="/">Home</Link>
-        <Link className="text-slate-700 hover:text-[#b2d7e5] text-sm font-medium leading-normal transition-colors" to="/dormitories">Accommodation</Link>
+        <Link className="text-slate-700 hover:text-[#b2d7e5] text-sm font-medium leading-normal transition-colors" to="/accommodation">Accommodation</Link>
         <Link className="text-[#b2d7e5] text-sm font-bold leading-normal" to="/activities">Activities</Link>
-        <Link className="text-slate-700 hover:text-[#b2d7e5] text-sm font-medium leading-normal transition-colors" to="/dining">Dining</Link>
-        <Link className="text-slate-700 hover:text-[#b2d7e5] text-sm font-medium leading-normal transition-colors" to="/events">Events</Link>
         <Link className="text-slate-700 hover:text-[#b2d7e5] text-sm font-medium leading-normal transition-colors" to="/contact">Contact</Link>
+        <Link className="text-slate-700 hover:text-[#b2d7e5] text-sm font-medium leading-normal transition-colors" to="/bookings">My Bookings</Link>
         <button className="flex min-w-[100px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-6 bg-[#b2d7e5] text-slate-900 text-sm font-bold leading-normal tracking-[0.015em] hover:bg-opacity-80 transition-colors">
           <span className="truncate">Book Now</span>
         </button>

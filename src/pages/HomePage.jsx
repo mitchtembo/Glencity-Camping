@@ -1,7 +1,31 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import BookingWidget from '../components/BookingWidget';
+import accommodations from '../data/accommodations.json';
 
 const HomePage = () => {
+  const navigate = useNavigate();
+
+  const handleSearch = (criteria) => {
+    const { checkIn, checkOut, guests } = criteria;
+    const available = accommodations.filter(acc => {
+      const isBooked = acc.bookings.some(booking => {
+        const bookingStart = new Date(booking.from);
+        const bookingEnd = new Date(booking.to);
+        const searchStart = new Date(checkIn);
+        const searchEnd = new Date(checkOut);
+        return (searchStart < bookingEnd && searchEnd > bookingStart);
+      });
+      return acc.capacity >= guests && !isBooked;
+    });
+
+    if (available.length > 0) {
+      navigate('/accommodation', { state: { results: available } });
+    } else {
+      alert('No accommodations available for the selected dates.');
+    }
+  };
+
   return (
     <main className="flex-1">
       <section className="relative">
@@ -9,9 +33,11 @@ const HomePage = () => {
         <div className="min-h-[560px] flex flex-col items-center justify-center bg-cover bg-center bg-no-repeat p-8 relative z-10" style={{backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuD0buucPGE-DXXKYOxp3f9oTnRuK8ySkgSBwnFS5hKslI-D2h1ZTbn0X0LqF1u8expkHv4KfNzI4NWxGQIE_6IGPwIndRdBZWEbfJYtVOfYryP8i6FeNw_kYePHCe7CIuEXn4wVTz95H_TZRZ4cG72qybJrY6Fa0sk93fC8E5Xb_vcVdhVAv6l1v1u2cXvc0jIvGOhZoGt0RL9o--mCvynR2QTXFpORmlfVsKkg5jOQPTO8LCrUopIfyki5BUZokj_xW0e-sJdQaOhU")'}}>
           <div className="flex flex-col gap-4 text-center max-w-3xl">
             <h1 className="text-white text-5xl font-black leading-tight tracking-[-0.033em] md:text-6xl">Escape to Glencity Camping Site</h1>
-            <p className="text-white text-base font-light leading-relaxed md:text-lg">Experience the tranquility of nature with our luxurious chalets, cozy dormitories, and exciting activities. Book your stay today and create unforgettable memories.</p>
+            <p className="text-white text-base font-light leading-relaxed md:text-lg">Experience the tranquility of nature with our luxurious chalet rentals. Book your stay today and create unforgettable memories.</p>
           </div>
-          <BookingWidget />
+          <div className="w-full max-w-md mt-8">
+            <BookingWidget onSearch={handleSearch} />
+          </div>
         </div>
       </section>
       <section className="px-6 md:px-10 lg:px-20 py-12">

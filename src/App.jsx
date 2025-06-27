@@ -3,23 +3,27 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
-import DormitoriesPage from './pages/DormitoriesPage';
+import AccommodationPage from './pages/AccommodationPage';
 import ActivitiesPage from './pages/ActivitiesPage';
 import DiningPage from './pages/DiningPage';
 import EventsPage from './pages/EventsPage';
+import ContactPage from './pages/ContactPage';
+import Bookings from './pages/Bookings';
 
 function App() {
   return (
     <Router>
       <div className="relative flex size-full min-h-screen flex-col group/design-root overflow-x-hidden" style={{fontFamily: '"Plus Jakarta Sans", "Noto Sans", sans-serif'}}>
-        <div className="layout-container flex h-full grow flex-col">
+        <div className="layout-container flex h-full grow flex-col pt-16">
           <Navbar />
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/dormitories" element={<DormitoriesPage />} />
+            <Route path="/accommodation" element={<AccommodationPage />} />
             <Route path="/activities" element={<ActivitiesPage />} />
             <Route path="/dining" element={<DiningPage />} />
             <Route path="/events" element={<EventsPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/bookings" element={<Bookings />} />
           </Routes>
           <Footer />
         </div>
