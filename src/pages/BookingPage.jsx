@@ -1,81 +1,201 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
-import accommodationsData from '../data/accommodations.json';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
+import { QRCodeSVG } from 'qrcode.react';
+import { AlertTriangle, Check } from 'lucide-react';
+import accommodationsData from '../data/accommodations.json'; // We'll need to update this data source
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { 
+  validateBookingDates, 
+  getTodayDate, 
+  getTomorrowDate,
+  calculateNights,
+  formatValidationErrors 
+} from '../utils/dateValidation';
+
+// Helper function to simulate updating booking data (temporary)
+// In a real app, this would be a backend API call.
+const updateAccommodationBookings = (accommodationId, newBooking) => {
+  // NOTE: This is a client-side simulation and does not persist changes
+  // or handle concurrent bookings properly. A backend is required for a real system.
+  console.warn("Simulating booking update. Data is not persisted and may lead to inconsistencies.");
+  const accommodation = accommodationsData.find(acc => acc.id === parseInt(accommodationId));
+  if (accommodation) {
+    accommodation.bookings.push(newBooking);
+  }
+};
+
 
 const BookingPage = () => {
   const { id } = useParams();
   const location = useLocation();
-  const { checkIn, checkOut } = location.state || {};
+  const navigate = useNavigate();
 
   const [accommodation, setAccommodation] = useState(null);
-  const [bookingDetails, setBookingDetails] = useState({
-    name: '',
-    email: '',
-    phone: '',
-  });
-  const [isConfirmed, setIsConfirmed] = useState(false);
+  const [checkIn, setCheckIn] = useState('');
+  const [checkOut, setCheckOut] = useState('');
+  const [guestName, setGuestName] = useState('');
+  const [guestEmail, setGuestEmail] = useState('');
+  const [isBooked, setIsBooked] = useState(false);
+  const [bookingDetails, setBookingDetails] = useState(null);
+  const [validationErrors, setValidationErrors] = useState([]);
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  // Get today's date in YYYY-MM-DD format
+  const today = getTodayDate();
 
   useEffect(() => {
     const selectedAccommodation = accommodationsData.find(acc => acc.id === parseInt(id));
     setAccommodation(selectedAccommodation);
-  }, [id]);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setBookingDetails(prev => ({ ...prev, [name]: value }));
+    if (location.state) {
+      setCheckIn(location.state.checkIn || '');
+      setCheckOut(location.state.checkOut || '');
+    }
+  }, [id, location.state]);
+
+  const handleDateChange = (type, value) => {
+    if (type === 'checkIn') {
+      setCheckIn(value);
+      // Auto-adjust checkout if it's before or equal to new check-in
+      if (checkOut && value >= checkOut) {
+        const nextDay = new Date(value);
+        nextDay.setDate(nextDay.getDate() + 1);
+        setCheckOut(nextDay.toISOString().split('T')[0]);
+      }
+    } else {
+      setCheckOut(value);
+    }
+    
+    // Clear errors when user makes changes
+    if (validationErrors.length > 0) {
+      setValidationErrors([]);
+    }
   };
 
-  const calculateNights = (dateIn, dateOut) => {
-    if (!dateIn || !dateOut) return 0;
-    const dIn = new Date(dateIn);
-    const dOut = new Date(dateOut);
-    const diffTime = Math.abs(dOut - dIn);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays > 0 ? diffDays : 1; // Ensure at least 1 night if dates are same
+  const validateForm = () => {
+    const errors = [];
+    
+    // Validate guest information
+    if (!guestName.trim()) {
+      errors.push("Guest name is required");
+    }
+    if (!guestEmail.trim()) {
+      errors.push("Email address is required");
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(guestEmail)) {
+      errors.push("Please enter a valid email address");
+    }
+    
+    // Validate dates
+    const dateValidation = validateBookingDates(checkIn, checkOut);
+    if (!dateValidation.isValid) {
+      errors.push(...dateValidation.errors);
+    }
+    
+    return {
+      isValid: errors.length === 0,
+      errors,
+      nights: dateValidation.isValid ? dateValidation.nights : 0
+    };
   };
 
-  const nights = calculateNights(checkIn, checkOut);
-  const totalPrice = accommodation ? accommodation.price * nights : 0;
-
-  const handleConfirmBooking = () => {
-    // Basic validation
-    if (!bookingDetails.name || !bookingDetails.email) {
-      alert('Please fill in your name and email.');
+  const handlePayment = (e) => {
+    e.preventDefault();
+    setIsProcessing(true);
+    
+    // Validate form
+    const validation = validateForm();
+    
+    if (!validation.isValid) {
+      setValidationErrors(validation.errors);
+      setIsProcessing(false);
       return;
     }
-    // In a real app, this would involve API calls to payment gateway and backend
-    console.log('Booking confirmed for:', accommodation, 'Dates:', checkIn, '-', checkOut, 'Details:', bookingDetails, 'Total:', totalPrice);
-    setIsConfirmed(true);
-    // TODO: Update accommodations.json or backend to reflect new booking
+
+    // Clear any previous errors
+    setValidationErrors([]);
+
+    // Simulate payment processing delay
+    setTimeout(() => {
+      // Simulate payment success
+      console.log("Simulating payment processing...");
+
+      const newBooking = { from: checkIn, to: checkOut };
+      updateAccommodationBookings(id, newBooking); // Simulate updating the bookings
+
+      const details = {
+        accommodationName: accommodation.name,
+        guestName,
+        guestEmail,
+        checkIn,
+        checkOut,
+        nights: validation.nights,
+        totalPrice: accommodation.price * validation.nights,
+      };
+      
+      setBookingDetails(details);
+      setIsBooked(true);
+      setIsProcessing(false);
+    }, 1500); // 1.5 second delay to simulate processing
   };
 
   if (!accommodation) {
-    return (
-      <main className="flex-1 py-12 px-4 sm:px-6 lg:px-8 text-center">
-        <p>Loading accommodation details...</p>
-      </main>
-    );
+    return <div className="text-center py-10">Accommodation not found.</div>;
   }
 
-  if (isConfirmed) {
+  if (isBooked && bookingDetails) {
+    const qrCodeValue = `Booking Confirmed for: ${bookingDetails.accommodationName}\nGuest: ${bookingDetails.guestName}\nCheck-in: ${bookingDetails.checkIn}\nCheck-out: ${bookingDetails.checkOut}\nNights: ${bookingDetails.nights}\nPrice: $${bookingDetails.totalPrice.toFixed(2)}`;
     return (
       <main className="flex-1 py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl mx-auto bg-white shadow-xl rounded-xl p-6 md:p-8 text-center">
-          <h2 className="text-3xl font-bold text-green-600 mb-4">Booking Confirmed!</h2>
-          <p className="text-gray-700 mb-2">Thank you for booking <strong>{accommodation.name}</strong>.</p>
-          <p className="text-gray-600 mb-2">Check-in: {checkIn || 'Not specified'}</p>
-          <p className="text-gray-600 mb-2">Check-out: {checkOut || 'Not specified'}</p>
-          <p className="text-gray-600 mb-2">Total Price: ${totalPrice}</p>
-          <p className="text-gray-600 mb-4">A confirmation email has been sent to {bookingDetails.email}.</p>
-          <div className="mt-6">
-            <h4 className="text-lg font-semibold text-gray-800 mb-2">Your Booking QR Code:</h4>
-            {/* Placeholder for QR Code - In a real app, generate this */}
-            <img
-              src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=BookingID-123-Acc-${accommodation.id}-From-${checkIn}-To-${checkOut}`}
-              alt="Booking QR Code"
-              className="mx-auto border p-2 rounded-md"
-            />
+        <div className="max-w-2xl mx-auto bg-white shadow-xl rounded-xl p-6 md:p-8">
+          <div className="text-center mb-6">
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Check className="w-8 h-8 text-green-600" />
+            </div>
+            <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Booking Confirmed!</h2>
+            <p className="text-gray-600 mt-2">Your reservation has been successfully processed</p>
           </div>
+          
+          <div className="text-center mb-6">
+            <QRCodeSVG value={qrCodeValue} size={128} level="H" />
+          </div>
+          
+          <div className="space-y-3 bg-gray-50 rounded-lg p-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm text-gray-600">Accommodation</p>
+                <p className="font-semibold">{bookingDetails.accommodationName}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">Guest Name</p>
+                <p className="font-semibold">{bookingDetails.guestName}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">Check-in</p>
+                <p className="font-semibold">{bookingDetails.checkIn}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">Check-out</p>
+                <p className="font-semibold">{bookingDetails.checkOut}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">Duration</p>
+                <p className="font-semibold">{bookingDetails.nights} night{bookingDetails.nights !== 1 ? 's' : ''}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">Total Price</p>
+                <p className="font-semibold text-[#19abe5]">${bookingDetails.totalPrice.toFixed(2)}</p>
+              </div>
+            </div>
+            <div className="border-t pt-4 mt-4">
+              <p className="text-sm text-gray-600">Confirmation sent to: <span className="font-medium">{bookingDetails.guestEmail}</span></p>
+            </div>
+          </div>
+          
+          <Button onClick={() => navigate('/')} className="w-full mt-8 h-11 bg-[#19abe5] hover:bg-[#138ac2] text-white">
+            Back to Home
+          </Button>
         </div>
       </main>
     );
@@ -83,82 +203,138 @@ const BookingPage = () => {
 
   return (
     <main className="flex-1 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-extrabold text-gray-900 tracking-tight sm:text-5xl">Complete Your Booking</h2>
-          <p className="mt-4 text-lg leading-6 text-gray-600">
-            You're booking <strong>{accommodation.name}</strong> from <strong>{checkIn || 'N/A'}</strong> to <strong>{checkOut || 'N/A'}</strong> ({nights} night{nights === 1 ? '' : 's'}).
-          </p>
-        </div>
-
-        <div className="bg-white shadow-xl rounded-xl p-6 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Left Column: Accommodation Details & Price Summary */}
-          <div>
-            <section className="mb-8">
-              <h3 className="text-2xl font-semibold text-gray-800 mb-4">Accommodation Details</h3>
-              <div className="bg-gray-50 rounded-lg p-6">
-                <img src={accommodation.image} alt={accommodation.name} className="w-full h-48 object-cover rounded-md mb-4" />
-                <h4 className="text-xl font-bold text-gray-900">{accommodation.name}</h4>
-                <p className="text-gray-600">{accommodation.type} - Up to {accommodation.capacity} guests</p>
-                <p className="text-lg font-semibold text-[#b2d7e5] mt-2">${accommodation.price} <span className="text-sm font-normal text-gray-500">/ night</span></p>
-              </div>
-            </section>
-
-            <section>
-              <h3 className="text-2xl font-semibold text-gray-800 mb-4">Price Summary</h3>
-              <div className="bg-gray-50 rounded-lg p-6">
-                <div className="flex justify-between items-center mb-2">
-                  <p className="text-gray-700">{accommodation.price} x {nights} night{nights === 1 ? '' : 's'}</p>
-                  <p className="text-gray-900 font-semibold">${accommodation.price * nights}</p>
-                </div>
-                {/* Add other fees like service fee, taxes if applicable */}
-                <hr className="my-2"/>
-                <div className="flex justify-between items-center font-bold text-lg">
-                  <p className="text-gray-800">Total</p>
-                  <p className="text-[#19abe5]">${totalPrice}</p>
-                </div>
-              </div>
-            </section>
+      <div className="max-w-2xl mx-auto">
+        <div className="bg-white shadow-xl rounded-xl p-6 md:p-8">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Book Your Stay</h2>
+            <p className="mt-2 text-lg text-gray-600">You are booking: <strong>{accommodation.name}</strong></p>
           </div>
 
-          {/* Right Column: User Details & Payment */}
-          <div>
-            <section className="mb-8">
-              <h3 className="text-2xl font-semibold text-gray-800 mb-4">Your Details</h3>
-              <div className="bg-gray-50 rounded-lg p-6 space-y-4">
-                <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-700">Full Name</label>
-                  <input type="text" name="name" id="name" value={bookingDetails.name} onChange={handleInputChange} className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#19abe5] focus:border-[#19abe5] sm:text-sm h-10 px-3" required />
-                </div>
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email Address</label>
-                  <input type="email" name="email" id="email" value={bookingDetails.email} onChange={handleInputChange} className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#19abe5] focus:border-[#19abe5] sm:text-sm h-10 px-3" required />
-                </div>
-                <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Phone Number (Optional)</label>
-                  <input type="tel" name="phone" id="phone" value={bookingDetails.phone} onChange={handleInputChange} className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#19abe5] focus:border-[#19abe5] sm:text-sm h-10 px-3" />
+          <form onSubmit={handlePayment} className="space-y-6">
+            {/* Display validation errors */}
+            {validationErrors.length > 0 && (
+              <div className="p-4 bg-red-50 border border-red-200 rounded-md">
+                <div className="flex items-start">
+                  <AlertTriangle className="w-5 h-5 text-red-500 mt-0.5 mr-3 flex-shrink-0" />
+                  <div className="text-sm text-red-700">
+                    <div className="font-medium mb-2">Please fix the following issues:</div>
+                    <ul className="list-disc list-inside space-y-1">
+                      {validationErrors.map((error, index) => (
+                        <li key={index}>{error}</li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
               </div>
-            </section>
+            )}
 
-            <section className="mb-8"> {/* Changed from Payment Section for now */}
-              <h3 className="text-2xl font-semibold text-gray-800 mb-4">Payment</h3>
-              {/* Placeholder for payment form */}
-              <div className="bg-gray-50 rounded-lg p-6">
-                <p className="text-gray-700">Payment gateway integration will be here.</p>
-                <p className="text-sm text-gray-500 mt-2">For now, clicking "Confirm and Book" will simulate a successful booking.</p>
+            <div>
+              <img src={accommodation.image} alt={accommodation.name} className="w-full h-64 object-cover rounded-lg mb-4" />
+              <div className="flex justify-between items-center">
+                <p className="text-lg font-semibold text-[#b2d7e5]">${accommodation.price} <span className="text-sm font-normal text-gray-500">/ night</span></p>
+                {checkIn && checkOut && validationErrors.length === 0 && (
+                  <p className="text-sm text-gray-600">
+                    {calculateNights(checkIn, checkOut)} night{calculateNights(checkIn, checkOut) !== 1 ? 's' : ''} = 
+                    <span className="font-semibold text-[#19abe5] ml-1">
+                      ${(accommodation.price * calculateNights(checkIn, checkOut)).toFixed(2)}
+                    </span>
+                  </p>
+                )}
               </div>
-            </section>
-
-            <div className="mt-8 text-center">
-              <button
-                onClick={handleConfirmBooking}
-                className="w-full px-8 py-3 bg-[#19abe5] hover:bg-[#138ac2] text-white text-lg font-semibold rounded-lg transition-colors"
-              >
-                Confirm and Book
-              </button>
             </div>
-          </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <Label htmlFor="check-in" className="block text-sm font-medium text-gray-700 mb-1">Check-in Date</Label>
+                <Input
+                  id="check-in"
+                  type="date"
+                  value={checkIn}
+                  onChange={(e) => handleDateChange('checkIn', e.target.value)}
+                  min={today}
+                  required
+                  className={`w-full h-12 rounded-md border-gray-300 ${
+                    validationErrors.some(error => error.toLowerCase().includes('check-in')) 
+                      ? 'border-red-300 focus:border-red-500 focus:ring-red-500' 
+                      : ''
+                  }`}
+                />
+              </div>
+              <div>
+                <Label htmlFor="check-out" className="block text-sm font-medium text-gray-700 mb-1">Check-out Date</Label>
+                <Input
+                  id="check-out"
+                  type="date"
+                  value={checkOut}
+                  onChange={(e) => handleDateChange('checkOut', e.target.value)}
+                  min={checkIn || getTomorrowDate()}
+                  required
+                  className={`w-full h-12 rounded-md border-gray-300 ${
+                    validationErrors.some(error => error.toLowerCase().includes('check-out')) 
+                      ? 'border-red-300 focus:border-red-500 focus:ring-red-500' 
+                      : ''
+                  }`}
+                />
+              </div>
+            </div>
+
+            <div>
+              <Label htmlFor="guest-name" className="block text-sm font-medium text-gray-700 mb-1">Full Name</Label>
+              <Input
+                id="guest-name"
+                type="text"
+                value={guestName}
+                onChange={(e) => setGuestName(e.target.value)}
+                required
+                className={`w-full h-12 rounded-md border-gray-300 ${
+                  validationErrors.some(error => error.toLowerCase().includes('name')) 
+                    ? 'border-red-300 focus:border-red-500 focus:ring-red-500' 
+                    : ''
+                }`}
+                placeholder="Your Name"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="guest-email" className="block text-sm font-medium text-gray-700 mb-1">Email Address</Label>
+              <Input
+                id="guest-email"
+                type="email"
+                value={guestEmail}
+                onChange={(e) => setGuestEmail(e.target.value)}
+                required
+                className={`w-full h-12 rounded-md border-gray-300 ${
+                  validationErrors.some(error => error.toLowerCase().includes('email')) 
+                    ? 'border-red-300 focus:border-red-500 focus:ring-red-500' 
+                    : ''
+                }`}
+                placeholder="your.email@example.com"
+              />
+            </div>
+
+            <div className="pt-4">
+              <h3 className="text-xl font-semibold text-gray-800 mb-3">Payment Details</h3>
+              <div className="bg-gray-100 p-4 rounded-lg text-center">
+                <p className="text-gray-600">Payment gateway integration is not yet implemented.</p>
+                <p className="text-sm text-gray-500">Clicking "Confirm & Pay" will simulate a successful booking.</p>
+              </div>
+            </div>
+
+            <Button 
+              type="submit" 
+              disabled={isProcessing}
+              className="w-full h-12 px-8 bg-[#19abe5] hover:bg-[#138ac2] disabled:bg-gray-400 disabled:cursor-not-allowed text-white text-lg font-semibold transition-colors"
+            >
+              {isProcessing ? (
+                <div className="flex items-center justify-center">
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                  Processing...
+                </div>
+              ) : (
+                'Confirm & Pay'
+              )}
+            </Button>
+          </form>
         </div>
       </div>
     </main>
