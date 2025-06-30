@@ -44,7 +44,7 @@ const HomePage = () => {
       </section>
       <section className="px-6 md:px-10 lg:px-20 py-12">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-[#0e171b] text-3xl font-bold leading-tight tracking-[-0.015em] mb-8 text-center">Browse Our Accommodations and Activities</h2>
+          <h2 className="text-[#0e171b] text-3xl font-bold leading-tight tracking-[-0.015em] mb-8 text-center">Browse Accommodations and Activities</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             <div className="flex flex-col gap-4 rounded-xl overflow-hidden shadow-lg bg-white transition-transform hover:scale-105 duration-300">
               <div className="w-full bg-center bg-no-repeat aspect-video bg-cover" style={{backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuDu4XlOPhEAn8NfWKpG1KURSw8bxe1r3uoAS5XEz_6kWSBw-P9m0qQgg6ZrZlReG_M7-wLw9_ScDigAs5NgVPHrbowTh59RFNnkBlOXIO42tJrb3x1klEzm7Gy-t2SX4Z6VOSQifOvuIRI25mCxWZUaTPmZJa_zhSSMDx2E3gEoZnYnqgpP7qfvfHrb09P7WHM2DaI-zRzEgid_DoA-dZTJXrORUjNgUGo2qzETzILEpHfDjikYeujvU_iZoQasvTtfLPbGbkqVQp5t")'}}></div>
