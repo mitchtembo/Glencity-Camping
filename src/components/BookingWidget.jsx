@@ -24,7 +24,7 @@ function isBooked(acc, checkIn, checkOut) {
   });
 }
 
-const BookingWidget = () => {
+const BookingWidget = ({ accommodation }) => {
   const [checkIn, setCheckIn] = useState('');
   const [checkOut, setCheckOut] = useState('');
   const [validationErrors, setValidationErrors] = useState([]);
@@ -61,12 +61,16 @@ const BookingWidget = () => {
     // Clear any previous errors
     setValidationErrors([]);
     
-    // Mark accommodations as booked or available for the selected dates
-    const results = accommodations.map(acc => ({
-      ...acc,
-      isBooked: isBooked(acc, checkIn, checkOut)
-    }));
-    navigate('/accommodation', { state: { results, checkIn, checkOut, guests } });
+    if (accommodation) {
+      navigate(`/booking/${accommodation.id}`, { state: { checkIn, checkOut } });
+    } else {
+      // Mark accommodations as booked or available for the selected dates
+      const results = accommodations.map(acc => ({
+        ...acc,
+        isBooked: isBooked(acc, checkIn, checkOut)
+      }));
+      navigate('/accommodation', { state: { results, checkIn, checkOut } });
+    }
   };
 
   return (
