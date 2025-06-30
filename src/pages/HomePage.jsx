@@ -83,7 +83,7 @@ const HomePage = () => {
                 <h3 className="text-[#0e171b] text-xl font-bold leading-tight tracking-[-0.015em] mb-2">Early Bird Discount</h3>
                 <p className="text-[#4e8397] text-base font-normal leading-relaxed mb-4">Book your stay at least 30 days in advance and receive a 15% discount on your total booking.</p>
                 <button className="flex min-w-[120px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-5 bg-[#19abe5] text-white text-sm font-medium leading-normal hover:bg-[#138ac2] transition-colors">
-                  <span className="truncate">Learn More</span>
+                  <span className="truncate">Learn More.</span>
                 </button>
               </div>
             </div>
