@@ -10,6 +10,7 @@ import EventsPage from './pages/EventsPage';
 import ContactPage from './pages/ContactPage';
 import Bookings from './pages/Bookings';
 import BookingPage from './pages/BookingPage'; // Import the new BookingPage
+import ChaletPage from './pages/ChaletPage';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/bookings" element={<Bookings />} />
             <Route path="/booking/:id" element={<BookingPage />} /> {/* Add route for BookingPage */}
+            <Route path="/chalet/:id" element={<ChaletPage />} />
           </Routes>
           <Footer />
         </div>

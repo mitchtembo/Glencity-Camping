@@ -4,9 +4,8 @@ import { useNavigate } from 'react-router-dom';
 const AvailabilityResults = ({ results, checkIn, checkOut }) => { // Add checkIn and checkOut props
   const navigate = useNavigate();
 
-  const handleBookNow = (accommodationId) => {
-    // Navigate to the booking page with accommodation ID, check-in, and check-out dates
-    navigate(`/booking/${accommodationId}`, { state: { checkIn, checkOut } });
+  const handleViewProperty = (accommodationId) => {
+    navigate(`/chalet/${accommodationId}`);
   };
 
   if (results.length === 0) {
@@ -34,11 +33,10 @@ const AvailabilityResults = ({ results, checkIn, checkOut }) => { // Add checkIn
                 </p>
                 <p className="text-lg font-semibold text-[#b2d7e5] mt-3">${acc.price} <span className="text-sm font-normal text-gray-500">/ night</span></p>
                 <button
-                  onClick={() => handleBookNow(acc.id)} // Updated onClick handler
-                  className="mt-4 flex items-center justify-center gap-2 w-full h-11 px-6 bg-[#b2d7e5] text-white text-sm font-bold rounded-lg hover:bg-[#a1c3d0] transition-colors"
+                  onClick={() => handleViewProperty(acc.id)}
+                  className="mt-4 flex items-center justify-center gap-2 w-full h-11 px-6 bg-[#19abe5] text-white text-sm font-bold rounded-lg hover:bg-[#138ac2] transition-colors"
                 >
-                  <span className="material-icons-outlined text-lg">shopping_cart</span>
-                  Book Now
+                  View Property
                 </button>
               </div>
             </div>

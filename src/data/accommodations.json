@@ -1,42 +1,382 @@
 [
   {
     "id": 1,
-    "name": "Cozy Corner Dorm",
-    "type": "Dormitory",
-    "capacity": 8,
-    "price": 25,
-    "image": "https://lh3.googleusercontent.com/aida-public/AB6AXuC8NGsUVE5KtZKqEzt52-z0klAkKIYIA5j6BZM5DYJB3cMi3xo7OLBteljhVkFa_ytgX5eFtt4zTyqD1j2xG5UBm0ShIt9sbKjOeQemB9xMnUC0jj6JZZ8bFZWQd6R_jtRDYWb4x8h-eYkffY-cgoYGQqrMJADakhZkuClHSh4aROKwoaUMcmm5X9rGosmQgqpRH5g8NhBJba-pB1-lpSgh8jjaqXzV1DCMl4WbzuvlCzIdUG_UnmY0esQPxXsctRLcTTDgiBp-hKo_",
-    "bookings": [
-      { "from": "2024-07-10", "to": "2024-07-15" }
-    ]
+    "name": "Chalet 1",
+    "type": "Chalet",
+    "capacity": 4,
+    "price": 120,
+    "image": "https://placehold.co/600x400?text=Chalet+1",
+    "images": [
+      "https://placehold.co/600x400?text=Chalet+1",
+      "https://placehold.co/600x400?text=Living+Area",
+      "https://placehold.co/600x400?text=Bedroom"
+    ],
+    "description": "Escape to our warm and inviting Chalet 1, a perfect retreat for families and church groups seeking tranquility and comfort. Nestled in the heart of Zimbabwe's stunning landscape, this chalet offers a serene environment to relax and reconnect with loved ones. Enjoy modern amenities and a cozy atmosphere that feels like a home away from home.",
+    "amenities": ["Geysers", "Solar Power", "Gas Cooker", "Wi-Fi", "Private Patio"],
+    "bookings": []
   },
   {
     "id": 2,
-    "name": "Nature Nook Dorm",
-    "type": "Dormitory",
-    "capacity": 6,
-    "price": 30,
-    "image": "https://lh3.googleusercontent.com/aida-public/AB6AXuA7tXJ63BgFdEh8sL4Xy1_6iuZMJJKMYWuWliwabjC7EqVkj_JkpuwRw15DImMlkpRPfDcfr-XXpbp3U0HDhbn_LwQPPlEBMpU9symNPstiA31o6XMeRclDAhL4iTKZoP0joTbKC9YDUW6BfYpkLCwpixux1wLOnliofUzUnsoxCkkHBlBFe5qw_8ApxChnoDk_ngssMk0_07jv0rCbliP-kvhkYekCb2ToRMqpZx1amULhnhotD2Q6dX-xxES-ftVbJrTv2XYe4m1",
+    "name": "Chalet 2",
+    "type": "Chalet",
+    "capacity": 4,
+    "price": 120,
+    "image": "https://placehold.co/600x400?text=Chalet+2",
+    "images": [
+      "https://placehold.co/600x400?text=Chalet+2"
+    ],
+    "description": "Discover the charm of Chalet 2, designed to provide a comfortable and memorable stay. With its warm and inviting ambiance, it's an ideal choice for families and spiritual retreats. The chalet is equipped with essential amenities to ensure a hassle-free and enjoyable experience.",
+    "amenities": ["Geysers", "Solar Power", "Gas Cooker"],
     "bookings": []
   },
   {
     "id": 3,
-    "name": "Serene Chalet",
+    "name": "Chalet 3",
     "type": "Chalet",
-    "capacity": 2,
-    "price": 100,
-    "image": "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pinterest.com%2Fpin%2F5-star-luxury-hotel-in-zimbabwe--393295%20%D0%BE%D0%B3%D1%80%D0%B0%D0%BD%D0%B8%D1%87%D0%B5%D0%BD%D0%BD%D0%B0%D1%8F-liability-company%2F&psig=AOvVaw0G9x9qZ2Q6Q4Y-3Z_qJ2vQ&ust=1620479326024000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCJjQ_-_pvu8CFQAAAAAdAAAAABAD",
-    "bookings": [
-      { "from": "2024-08-01", "to": "2024-08-10" }
-    ]
+    "capacity": 4,
+    "price": 120,
+    "image": "https://placehold.co/600x400?text=Chalet+3",
+    "images": [
+      "https://placehold.co/600x400?text=Chalet+3"
+    ],
+    "description": "Chalet 3 offers a peaceful sanctuary for those looking to unwind. Its cozy interior and beautiful surroundings make it a perfect getaway for families and church groups. Enjoy the blend of comfort and nature in this lovely accommodation.",
+    "amenities": ["Geysers", "Solar Power", "Gas Cooker"],
+    "bookings": []
   },
   {
     "id": 4,
-    "name": "Riverside Camping Spot",
-    "type": "Camping",
+    "name": "Chalet 4",
+    "type": "Chalet",
     "capacity": 4,
-    "price": 15,
-    "image": "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pinterest.com%2Fpin%2F5-star-luxury-hotel-in-zimbabwe--393295-liability-company%2F&psig=AOvVaw0G9x9qZ2Q6Q4Y-3Z_qJ2vQ&ust=1620479326024000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCJjQ_-_pvu8CFQAAAAAdAAAAABAD",
+    "price": 120,
+    "image": "https://placehold.co/600x400?text=Chalet+4",
+    "images": [
+      "https://placehold.co/600x400?text=Chalet+4"
+    ],
+    "description": "Experience a relaxing stay at Chalet 4, where comfort meets convenience. This chalet is perfect for families and groups looking for a warm and inviting place to stay. It comes with all the necessary amenities for a pleasant retreat.",
+    "amenities": ["Geysers", "Solar Power", "Gas Cooker"],
+    "bookings": []
+  },
+  {
+    "id": 5,
+    "name": "Chalet 5",
+    "type": "Chalet",
+    "capacity": 4,
+    "price": 120,
+    "image": "https://placehold.co/600x400?text=Chalet+5",
+    "images": [
+      "https://placehold.co/600x400?text=Chalet+5"
+    ],
+    "description": "Chalet 5 is a delightful accommodation that promises a comfortable and enjoyable stay. Its warm and inviting atmosphere is perfect for families and church groups seeking a peaceful escape in a beautiful setting.",
+    "amenities": ["Geysers", "Solar Power", "Gas Cooker"],
+    "bookings": []
+  },
+  {
+    "id": 6,
+    "name": "Chalet 6",
+    "type": "Chalet",
+    "capacity": 4,
+    "price": 120,
+    "image": "https://placehold.co/600x400?text=Chalet+6",
+    "images": [
+      "https://placehold.co/600x400?text=Chalet+6"
+    ],
+    "description": "Enjoy a memorable stay at Chalet 6, a cozy and well-equipped accommodation. It's an excellent choice for families and groups looking for a warm and inviting environment to relax and create lasting memories.",
+    "amenities": ["Geysers", "Solar Power", "Gas Cooker"],
+    "bookings": []
+  },
+  {
+    "id": 7,
+    "name": "Chalet 7",
+    "type": "Chalet",
+    "capacity": 4,
+    "price": 120,
+    "image": "https://placehold.co/600x400?text=Chalet+7",
+    "images": [
+      "https://placehold.co/600x400?text=Chalet+7"
+    ],
+    "description": "Chalet 7 provides a comfortable and serene retreat for families and church groups. With its warm and inviting decor, this chalet is the perfect place to unwind and enjoy the natural beauty of Zimbabwe.",
+    "amenities": ["Geysers", "Solar Power", "Gas Cooker"],
+    "bookings": []
+  },
+  {
+    "id": 8,
+    "name": "Chalet 8",
+    "type": "Chalet",
+    "capacity": 4,
+    "price": 120,
+    "image": "https://placehold.co/600x400?text=Chalet+8",
+    "images": [
+      "https://placehold.co/600x400?text=Chalet+8"
+    ],
+    "description": "Relax and rejuvenate at Chalet 8, a charming accommodation designed for comfort and tranquility. It's an ideal spot for families and groups to enjoy a peaceful getaway with all the essential amenities.",
+    "amenities": ["Geysers", "Solar Power", "Gas Cooker"],
+    "bookings": []
+  },
+  {
+    "id": 9,
+    "name": "Chalet 9",
+    "type": "Chalet",
+    "capacity": 4,
+    "price": 120,
+    "image": "https://placehold.co/600x400?text=Chalet+9",
+    "images": [
+      "https://placehold.co/600x400?text=Chalet+9"
+    ],
+    "description": "Chalet 9 offers a warm and inviting atmosphere, making it a perfect choice for families and church groups. Enjoy a comfortable stay with modern amenities in a beautiful and serene location.",
+    "amenities": ["Geysers", "Solar Power", "Gas Cooker"],
+    "bookings": []
+  },
+  {
+    "id": 10,
+    "name": "Chalet 10",
+    "type": "Chalet",
+    "capacity": 4,
+    "price": 120,
+    "image": "https://placehold.co/600x400?text=Chalet+10",
+    "images": [
+      "https://placehold.co/600x400?text=Chalet+10"
+    ],
+    "description": "Experience a peaceful retreat at Chalet 10, a cozy and comfortable accommodation. It's an excellent choice for families and groups looking for a relaxing stay with all the necessary amenities.",
+    "amenities": ["Geysers", "Solar Power", "Gas Cooker"],
+    "bookings": []
+  },
+  {
+    "id": 11,
+    "name": "Chalet 11",
+    "type": "Chalet",
+    "capacity": 4,
+    "price": 120,
+    "image": "https://placehold.co/600x400?text=Chalet+11",
+    "images": [
+      "https://placehold.co/600x400?text=Chalet+11"
+    ],
+    "description": "Chalet 11 is a charming and comfortable accommodation, perfect for a family vacation or a group retreat. Enjoy the warm and inviting atmosphere and the convenience of modern amenities.",
+    "amenities": ["Geysers", "Solar Power", "Gas Cooker"],
+    "bookings": []
+  },
+  {
+    "id": 12,
+    "name": "Chalet 12",
+    "type": "Chalet",
+    "capacity": 4,
+    "price": 120,
+    "image": "https://placehold.co/600x400?text=Chalet+12",
+    "images": [
+      "https://placehold.co/600x400?text=Chalet+12"
+    ],
+    "description": "Enjoy a relaxing stay at Chalet 12, a well-appointed accommodation with a warm and inviting feel. It's an ideal choice for families and church groups seeking a peaceful and comfortable retreat.",
+    "amenities": ["Geysers", "Solar Power", "Gas Cooker"],
+    "bookings": []
+  },
+  {
+    "id": 13,
+    "name": "Chalet 13",
+    "type": "Chalet",
+    "capacity": 4,
+    "price": 120,
+    "image": "https://placehold.co/600x400?text=Chalet+13",
+    "images": [
+      "https://placehold.co/600x400?text=Chalet+13"
+    ],
+    "description": "Chalet 13 offers a serene and comfortable environment for a memorable getaway. With its cozy interiors and essential amenities, it's a great choice for families and groups.",
+    "amenities": ["Geysers", "Solar Power", "Gas Cooker"],
+    "bookings": []
+  },
+  {
+    "id": 14,
+    "name": "Chalet 14",
+    "type": "Chalet",
+    "capacity": 4,
+    "price": 120,
+    "image": "https://placehold.co/600x400?text=Chalet+14",
+    "images": [
+      "https://placehold.co/600x400?text=Chalet+14"
+    ],
+    "description": "Discover the comfort and tranquility of Chalet 14. This warm and inviting accommodation is perfect for families and church groups looking for a peaceful and enjoyable stay.",
+    "amenities": ["Geysers", "Solar Power", "Gas Cooker"],
+    "bookings": []
+  },
+  {
+    "id": 15,
+    "name": "Chalet 15",
+    "type": "Chalet",
+    "capacity": 4,
+    "price": 120,
+    "image": "https://placehold.co/600x400?text=Chalet+15",
+    "images": [
+      "https://placehold.co/600x400?text=Chalet+15"
+    ],
+    "description": "Chalet 15 is a cozy and welcoming accommodation, ideal for a relaxing family holiday or a group retreat. Enjoy the comfort and convenience of modern amenities in a beautiful setting.",
+    "amenities": ["Geysers", "Solar Power", "Gas Cooker"],
+    "bookings": []
+  },
+  {
+    "id": 16,
+    "name": "Chalet 16",
+    "type": "Chalet",
+    "capacity": 4,
+    "price": 120,
+    "image": "https://placehold.co/600x400?text=Chalet+16",
+    "images": [
+      "https://placehold.co/600x400?text=Chalet+16"
+    ],
+    "description": "Experience a comfortable and peaceful stay at Chalet 16. With its warm and inviting atmosphere, it's a perfect choice for families and church groups seeking a memorable getaway.",
+    "amenities": ["Geysers", "Solar Power", "Gas Cooker"],
+    "bookings": []
+  },
+  {
+    "id": 17,
+    "name": "Chalet 17",
+    "type": "Chalet",
+    "capacity": 4,
+    "price": 120,
+    "image": "https://placehold.co/600x400?text=Chalet+17",
+    "images": [
+      "https://placehold.co/600x400?text=Chalet+17"
+    ],
+    "description": "Chalet 17 offers a comfortable and relaxing retreat for families and groups. Enjoy the warm and inviting ambiance and the convenience of essential amenities for a pleasant stay.",
+    "amenities": ["Geysers", "Solar Power", "Gas Cooker"],
+    "bookings": []
+  },
+  {
+    "id": 18,
+    "name": "Chalet 18",
+    "type": "Chalet",
+    "capacity": 4,
+    "price": 120,
+    "image": "https://placehold.co/600x400?text=Chalet+18",
+    "images": [
+      "https://placehold.co/600x400?text=Chalet+18"
+    ],
+    "description": "Relax in the comfort of Chalet 18, a cozy and well-equipped accommodation. It's an ideal choice for families and church groups looking for a peaceful and enjoyable retreat.",
+    "amenities": ["Geysers", "Solar Power", "Gas Cooker"],
+    "bookings": []
+  },
+  {
+    "id": 19,
+    "name": "Chalet 19",
+    "type": "Chalet",
+    "capacity": 4,
+    "price": 120,
+    "image": "https://placehold.co/600x400?text=Chalet+19",
+    "images": [
+      "https://placehold.co/600x400?text=Chalet+19"
+    ],
+    "description": "Chalet 19 provides a warm and inviting space for a memorable family vacation or group getaway. Enjoy the comfort and convenience of modern amenities in a serene environment.",
+    "amenities": ["Geysers", "Solar Power", "Gas Cooker"],
+    "bookings": []
+  },
+  {
+    "id": 20,
+    "name": "Chalet 20",
+    "type": "Chalet",
+    "capacity": 4,
+    "price": 120,
+    "image": "https://placehold.co/600x400?text=Chalet+20",
+    "images": [
+      "https://placehold.co/600x400?text=Chalet+20"
+    ],
+    "description": "Enjoy a peaceful and comfortable stay at Chalet 20. This charming accommodation is perfect for families and church groups seeking a relaxing retreat with all the necessary amenities.",
+    "amenities": ["Geysers", "Solar Power", "Gas Cooker"],
+    "bookings": []
+  },
+  {
+    "id": 21,
+    "name": "Chalet 21",
+    "type": "Chalet",
+    "capacity": 4,
+    "price": 120,
+    "image": "https://placehold.co/600x400?text=Chalet+21",
+    "images": [
+      "https://placehold.co/600x400?text=Chalet+21"
+    ],
+    "description": "Chalet 21 offers a warm and inviting atmosphere for a memorable getaway. It's an excellent choice for families and groups looking for a comfortable and well-equipped place to stay.",
+    "amenities": ["Geysers", "Solar Power", "Gas Cooker"],
+    "bookings": []
+  },
+  {
+    "id": 22,
+    "name": "Chalet 22",
+    "type": "Chalet",
+    "capacity": 4,
+    "price": 120,
+    "image": "https://placehold.co/600x400?text=Chalet+22",
+    "images": [
+      "https://placehold.co/600x400?text=Chalet+22"
+    ],
+    "description": "Experience a relaxing retreat at Chalet 22, a cozy and comfortable accommodation. It's perfect for families and church groups seeking a peaceful stay with modern amenities.",
+    "amenities": ["Geysers", "Solar Power", "Gas Cooker"],
+    "bookings": []
+  },
+  {
+    "id": 23,
+    "name": "Chalet 23",
+    "type": "Chalet",
+    "capacity": 4,
+    "price": 120,
+    "image": "https://placehold.co/600x400?text=Chalet+23",
+    "images": [
+      "https://placehold.co/600x400?text=Chalet+23"
+    ],
+    "description": "Chalet 23 is a charming accommodation that promises a comfortable and enjoyable stay. Its warm and inviting atmosphere is perfect for families and church groups.",
+    "amenities": ["Geysers", "Solar Power", "Gas Cooker"],
+    "bookings": []
+  },
+  {
+    "id": 24,
+    "name": "Chalet 24",
+    "type": "Chalet",
+    "capacity": 4,
+    "price": 120,
+    "image": "https://placehold.co/600x400?text=Chalet+24",
+    "images": [
+      "https://placehold.co/600x400?text=Chalet+24"
+    ],
+    "description": "Enjoy a memorable stay at Chalet 24, a cozy and well-equipped accommodation. It's an excellent choice for families and groups looking for a warm and inviting environment.",
+    "amenities": ["Geysers", "Solar Power", "Gas Cooker"],
+    "bookings": []
+  },
+  {
+    "id": 25,
+    "name": "Chalet 25",
+    "type": "Chalet",
+    "capacity": 4,
+    "price": 120,
+    "image": "https://placehold.co/600x400?text=Chalet+25",
+    "images": [
+      "https://placehold.co/600x400?text=Chalet+25"
+    ],
+    "description": "Chalet 25 provides a comfortable and serene retreat for families and church groups. With its warm and inviting decor, this chalet is the perfect place to unwind and enjoy nature.",
+    "amenities": ["Geysers", "Solar Power", "Gas Cooker"],
+    "bookings": []
+  },
+  {
+    "id": 26,
+    "name": "Chalet 26",
+    "type": "Chalet",
+    "capacity": 4,
+    "price": 120,
+    "image": "https://placehold.co/600x400?text=Chalet+26",
+    "images": [
+      "https://placehold.co/600x400?text=Chalet+26"
+    ],
+    "description": "Relax and rejuvenate at Chalet 26, a charming accommodation designed for comfort and tranquility. It's an ideal spot for families and groups to enjoy a peaceful getaway.",
+    "amenities": ["Geysers", "Solar Power", "Gas Cooker"],
+    "bookings": []
+  },
+  {
+    "id": 27,
+    "name": "Chalet 27",
+    "type": "Chalet",
+    "capacity": 4,
+    "price": 120,
+    "image": "https://placehold.co/600x400?text=Chalet+27",
+    "images": [
+      "https://placehold.co/600x400?text=Chalet+27"
+    ],
+    "description": "Chalet 27 offers a warm and inviting atmosphere, making it a perfect choice for families and church groups. Enjoy a comfortable stay with modern amenities in a beautiful and serene location.",
+    "amenities": ["Geysers", "Solar Power", "Gas Cooker"],
     "bookings": []
   }
 ]
