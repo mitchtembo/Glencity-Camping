@@ -11,13 +11,22 @@ const bookingSchema = new mongoose.Schema({
     ref: 'Accommodation',
     required: true,
   },
-  checkIn: {
+  startDate: {
     type: Date,
     required: true,
   },
-  checkOut: {
+  endDate: {
     type: Date,
     required: true,
+  },
+  status: {
+    type: String,
+    enum: ['pending', 'confirmed', 'cancelled'],
+    default: 'pending',
+  },
+  bookingDate: {
+    type: Date,
+    default: Date.now,
   },
   guestName: {
     type: String,
