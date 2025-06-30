@@ -78,7 +78,7 @@ const HomePage = () => {
           <h2 className="text-[#0e171b] text-3xl font-bold leading-tight tracking-[-0.015em] mb-8 text-center">Special Offers</h2>
           <div className="space-y-8">
             <div className="flex flex-col lg:flex-row items-center bg-white rounded-xl shadow-lg overflow-hidden">
-              <div className="w-full lg:w-1/2 h-64 lg:h-auto bg-center bg-no-repeat bg-cover" style={{backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuC2lA76y9c6qBlboRp7crh9spvyDUboz0Ffgmyb7r7Omro35CkyhVQLajbqh9rxmtlaBUuR4TVame21VNRg03jl8PbtItPZFxTWzLo4WHCprFJ1DTZyiR4rDXVcUaW65CVC8lfS55mrluRTUyh9Yq4Msc1qv1SpYUTeY8n5fiufxBAw7U6zK7U1ARRRcQdqzCE7oPdEwklewCTpNSDSAkHYojhC_CegfaSV1e9uJOzfMV0PRKZBv5ux_1FXco7yO9yoAGya5YJxXF5y")'}}></div>
+              <img src="https://plus.unsplash.com/premium_photo-1670152411569-7cbc00946857?q=80&w=1615&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Early Bird Discount" className="w-full lg:w-1/2 h-64 lg:h-auto object-cover" />
               <div className="w-full lg:w-1/2 p-6 lg:p-8">
                 <h3 className="text-[#0e171b] text-xl font-bold leading-tight tracking-[-0.015em] mb-2">Early Bird Discount</h3>
                 <p className="text-[#4e8397] text-base font-normal leading-relaxed mb-4">Book your stay at least 30 days in advance and receive a 15% discount on your total booking.</p>
@@ -88,7 +88,7 @@ const HomePage = () => {
               </div>
             </div>
             <div className="flex flex-col lg:flex-row items-center bg-white rounded-xl shadow-lg overflow-hidden">
-              <div className="w-full lg:w-1/2 h-64 lg:h-auto bg-center bg-no-repeat bg-cover lg:order-last" style={{backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuC-W9yWLFtZAtY7ct4w92ck-YD8GPEPHXly_272DjW4itaVV5J2RD8PP0ol4iqkcQlQlC_EuNznOlpkYijjMtLd2lR0pnmqAsWcECHP1RGn3tdTMbhGsMGhjiEZtl8qShu9ARJoCuk8Rp9Hc5Bz_74ygbftORDnFvCY7n1f9ioIUg3gXNf6hcPOLjhkw8z8dLK7hLz2Kgwznt3Cwd7Rw83Foz8_YACmiLZJAl8BcrY_Ob7NXtIMPbClpLA0d0Gup_aSoI9hkk4IQ-cu")'}}></div>
+              <img src="https://images.unsplash.com/photo-1586294310498-2f435576fc4b?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Weekend Getaway Package" className="w-full lg:w-1/2 h-64 lg:h-auto object-cover lg:order-last" />
               <div className="w-full lg:w-1/2 p-6 lg:p-8 lg:order-first">
                 <h3 className="text-[#0e171b] text-xl font-bold leading-tight tracking-[-0.015em] mb-2">Weekend Getaway Package</h3>
                 <p className="text-[#4e8397] text-base font-normal leading-relaxed mb-4">Enjoy a 3-night stay with complimentary breakfast and a guided nature walk.</p>
