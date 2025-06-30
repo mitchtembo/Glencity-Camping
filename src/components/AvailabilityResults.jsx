@@ -25,12 +25,14 @@ const AvailabilityResults = ({ results, checkIn, checkOut }) => { // Add checkIn
         <h2 className="text-3xl font-bold leading-tight tracking-[-0.015em] mb-8 text-center">Available Accommodations</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {results.map(acc => (
-            <div key={acc.id} className="flex flex-col gap-4 rounded-xl overflow-hidden shadow-lg bg-white transition-transform hover:scale-105 duration-300">
-              <div className="p-5">
+            <div key={acc.id} className="flex flex-col rounded-xl overflow-hidden shadow-lg bg-white transition-transform hover:scale-105 duration-300">
+              <img src={acc.image} alt={acc.name} className="w-full h-48 object-cover" />
+              <div className="p-5 flex flex-col flex-grow">
                 <h3 className="text-[#0e171b] text-lg font-semibold leading-normal mb-1">{acc.name}</h3>
                 <p className="text-[#4e8397] text-sm font-normal leading-relaxed">
                   {acc.type} - Up to {acc.capacity} guests
                 </p>
+                <div className="flex-grow" />
                 <p className="text-lg font-semibold text-[#b2d7e5] mt-3">${acc.price} <span className="text-sm font-normal text-gray-500">/ night</span></p>
                 <button
                   onClick={() => handleViewProperty(acc.id)}
@@ -46,5 +48,4 @@ const AvailabilityResults = ({ results, checkIn, checkOut }) => { // Add checkIn
     </section>
   );
 };
-
 export default AvailabilityResults;
