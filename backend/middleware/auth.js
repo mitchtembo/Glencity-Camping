@@ -1,8 +1,5 @@
 const jwt = require('jsonwebtoken');
-// We'll need a JWT secret, typically stored in environment variables
-// For now, I'll use a placeholder.
-// TODO: Move JWT_SECRET to an environment variable file (.env)
-const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret'; // Replace with a strong secret
+const { config } = require('../config/environment');
 
 module.exports = function (req, res, next) {
   // Get token from header
@@ -15,7 +12,7 @@ module.exports = function (req, res, next) {
 
   // Verify token
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
+    const decoded = jwt.verify(token, config.jwtSecret);
     req.user = decoded.user;
     next();
   } catch (err) {

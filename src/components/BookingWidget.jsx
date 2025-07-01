@@ -50,7 +50,13 @@ const BookingWidget = ({ accommodation }) => {
   };
 
   const handleSearch = () => {
-    // Validate dates before searching
+    // If no dates are entered, navigate to the accommodations page without filtering
+    if (!checkIn && !checkOut) {
+      navigate('/accommodation');
+      return;
+    }
+
+    // Validate dates if they are entered
     const validation = validateBookingDates(checkIn, checkOut);
     
     if (!validation.isValid) {
@@ -61,10 +67,19 @@ const BookingWidget = ({ accommodation }) => {
     // Clear any previous errors
     setValidationErrors([]);
     
+    // If a specific accommodation is being viewed, navigate to its booking page
     if (accommodation) {
+      // Store booking data before navigation
+      const bookingData = {
+        accommodationId: accommodation.id,
+        checkIn,
+        checkOut,
+        accommodationName: accommodation.name
+      };
+      localStorage.setItem('tempBookingData', JSON.stringify(bookingData));
       navigate(`/booking/${accommodation.id}`, { state: { checkIn, checkOut } });
     } else {
-      // Mark accommodations as booked or available for the selected dates
+      // Otherwise, filter all accommodations by availability
       const results = accommodations.map(acc => ({
         ...acc,
         isBooked: isBooked(acc, checkIn, checkOut)
@@ -131,8 +146,7 @@ const BookingWidget = ({ accommodation }) => {
         </div>
         <Button 
           onClick={handleSearch} 
-          className="h-12 px-8 bg-[#19abe5] hover:bg-[#138ac2] text-white disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={!checkIn || !checkOut}
+          className="h-12 px-8 bg-[#19abe5] hover:bg-[#138ac2] text-white"
         >
           <Search className="w-4 h-4 mr-2" />
           Search

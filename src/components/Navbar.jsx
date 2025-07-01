@@ -1,9 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate, Link } from 'react-router-dom';
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setIsLoggedIn(false);
+    navigate('/');
+  };
+
   return (
     <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 px-4 md:px-10 py-4 shadow-sm bg-white fixed top-0 left-0 right-0 z-50">
       <div className="flex items-center gap-4 text-slate-900">
@@ -71,13 +86,39 @@ const Navbar = () => {
         >
           My Bookings
         </NavLink>
+        {!isLoggedIn ? (
+          <>
+            <NavLink
+              to="/login"
+              className={({ isActive }) =>
+                `text-sm font-medium leading-normal transition-colors ${isActive ? 'text-[#b2d7e5] font-bold' : 'text-slate-700 hover:text-[#b2d7e5]'}`
+              }
+            >
+              Login
+            </NavLink>
+            <NavLink
+              to="/register"
+              className={({ isActive }) =>
+                `text-sm font-medium leading-normal transition-colors ${isActive ? 'text-[#b2d7e5] font-bold' : 'text-slate-700 hover:text-[#b2d7e5]'}`
+              }
+            >
+              Register
+            </NavLink>
+          </>
+        ) : (
+          <button
+            onClick={handleLogout}
+            className="text-sm font-medium leading-normal text-slate-700 hover:text-[#b2d7e5] transition-colors"
+          >
+            Logout
+          </button>
+        )}
         <button
           className="flex min-w-[100px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-6 bg-[#b2d7e5] text-slate-900 text-sm font-bold leading-normal tracking-[0.015em] hover:bg-opacity-80 transition-colors"
           onClick={() => navigate('/accommodation')}
         >
           <span className="truncate">Book Now</span>
         </button>
-        <div className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-[#b2d7e5] shadow-sm" style={{backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuAOw-mhrNEYradPszRQNrDNwYvY_fCVdbFJ9rskeFHOYdTvujjNYJ__d3Ju2nE5Gvwqv8Vd3QbsNtVLy18dN-HhSrNwaGWvNTl3gUxPjw19uvo13w_Up88JQUIPv6BzHIKg3oh9xIL3bTwjEJl7IRYS-r_HDZhPxCBBgzPLMOKVGJhFikZ9qzT4Lt7LqK9EI59zyFAwM_VdQqOqz6v-FQXIux0YCFyHOKFFMr3c0DZ1BywHme_hf9TPY9Iim_rL_SSWFTdHCW8w1rvE")'}}></div>
       </nav>
       {/* Mobile nav menu */}
       {menuOpen && (

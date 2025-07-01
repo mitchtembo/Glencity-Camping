@@ -1,30 +1,66 @@
 const express = require('express');
 const router = express.Router();
-const auth = require('../middleware/auth'); // We'll create this middleware next
+const auth = require('../middleware/auth');
 const Booking = require('../models/Booking');
 const Accommodation = require('../models/Accommodation');
 const User = require('../models/User');
+const { isValidObjectId } = require('../utils/validation');
+const { validateBookingCreation, validateAvailabilityCheck } = require('../middleware/validation');
 
 // @route   POST api/bookings
 // @desc    Create a booking
 // @access  Private
-router.post('/', auth, async (req, res) => {
+router.post('/', auth, validateBookingCreation, async (req, res) => {
   const { accommodationId, startDate, endDate, guestName, guestEmail, totalPrice } = req.body;
 
   try {
-    // TODO: Add validation for dates, availability, etc.
+    // Check for conflicting bookings
+    const conflictingBooking = await Booking.findOne({
+      accommodation: accommodationId,
+      $or: [
+        {
+          startDate: { $lt: new Date(endDate) },
+          endDate: { $gt: new Date(startDate) }
+        }
+      ]
+    });
+
+    if (conflictingBooking) {
+      return res.status(409).json({ 
+        msg: 'Accommodation already booked for selected dates',
+        conflictingBooking: {
+          startDate: conflictingBooking.startDate,
+          endDate: conflictingBooking.endDate
+        }
+      });
+    }
+
+    // Validate accommodation exists
+    const accommodation = await Accommodation.findById(accommodationId);
+    if (!accommodation) {
+      return res.status(404).json({ msg: 'Accommodation not found' });
+    }
+
     const newBooking = new Booking({
       user: req.user.id, // from auth middleware
       accommodation: accommodationId,
-      startDate,
-      endDate,
+      startDate: new Date(startDate),
+      endDate: new Date(endDate),
       guestName,
       guestEmail,
       totalPrice,
+      status: 'confirmed'
     });
 
     const booking = await newBooking.save();
-    res.json(booking);
+    
+    // Populate accommodation details for response
+    await booking.populate('accommodation', ['name', 'type', 'price']);
+    
+    res.json({
+      message: 'Booking successful',
+      booking
+    });
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
@@ -36,8 +72,53 @@ router.post('/', auth, async (req, res) => {
 // @access  Private
 router.get('/my-bookings', auth, async (req, res) => {
   try {
-    const bookings = await Booking.find({ user: req.user.id }).populate('accommodation', ['name', 'type']);
+    // Validate user ID from auth middleware
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({
+        msg: 'Invalid user authentication'
+      });
+    }
+
+    if (!isValidObjectId(req.user.id)) {
+      return res.status(400).json({
+        msg: 'Invalid user ID format'
+      });
+    }
+
+    const bookings = await Booking.find({ user: req.user.id })
+      .populate('accommodation', ['name', 'type', 'price', 'image'])
+      .sort({ createdAt: -1 });
     res.json(bookings);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+// @route   GET api/bookings/check-availability
+// @desc    Check availability for an accommodation and date range
+// @access  Public
+router.get('/check-availability', validateAvailabilityCheck, async (req, res) => {
+  const { accommodationId, startDate, endDate } = req.query;
+
+  try {
+    const conflictingBooking = await Booking.findOne({
+      accommodation: accommodationId,
+      $or: [
+        {
+          startDate: { $lt: new Date(endDate) },
+          endDate: { $gt: new Date(startDate) }
+        }
+      ]
+    });
+
+    res.json({
+      available: !conflictingBooking,
+      conflictingBooking: conflictingBooking ? {
+        startDate: conflictingBooking.startDate,
+        endDate: conflictingBooking.endDate
+      } : null
+    });
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');

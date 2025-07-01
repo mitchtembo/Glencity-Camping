@@ -5,19 +5,23 @@ const bookingSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true,
+    index: true
   },
   accommodation: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Accommodation',
     required: true,
+    index: true
   },
   startDate: {
     type: Date,
     required: true,
+    index: true
   },
   endDate: {
     type: Date,
     required: true,
+    index: true
   },
   status: {
     type: String,
@@ -43,8 +47,13 @@ const bookingSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now,
+    index: true
   },
 });
+
+// Compound indexes for optimal query performance
+bookingSchema.index({ accommodation: 1, startDate: 1, endDate: 1 });
+bookingSchema.index({ user: 1, createdAt: -1 });
 
 const Booking = mongoose.model('Booking', bookingSchema);
 

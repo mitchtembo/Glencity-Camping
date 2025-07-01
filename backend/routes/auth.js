@@ -4,26 +4,25 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const auth = require('../middleware/auth'); // For fetching user data
-
-// We'll need a JWT secret, typically stored in environment variables
-// For now, I'll use a placeholder.
-// TODO: Move JWT_SECRET to an environment variable file (.env) and ensure it's the same as in middleware/auth.js
-const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret'; // Replace with a strong secret
+const { config } = require('../config/environment');
 
 // @route   POST api/auth/register
 // @desc    Register a new user
 // @access  Public
 router.post('/register', async (req, res) => {
-  const { username, password, role } = req.body;
+  const { name, lastName, phone, email, password, role } = req.body;
 
   try {
-    let user = await User.findOne({ username });
+    let user = await User.findOne({ email });
     if (user) {
       return res.status(400).json({ msg: 'User already exists' });
     }
 
     user = new User({
-      username,
+      name,
+      lastName,
+      phone,
+      email,
       password,
       role,
     });
@@ -42,8 +41,8 @@ router.post('/register', async (req, res) => {
 
     jwt.sign(
       payload,
-      JWT_SECRET,
-      { expiresIn: 3600 }, // 1 hour
+      config.jwtSecret,
+      { expiresIn: config.jwtExpiresIn },
       (err, token) => {
         if (err) throw err;
         res.json({ token });
@@ -59,10 +58,10 @@ router.post('/register', async (req, res) => {
 // @desc    Authenticate user & get token
 // @access  Public
 router.post('/login', async (req, res) => {
-  const { username, password } = req.body;
+  const { email, password } = req.body;
 
   try {
-    let user = await User.findOne({ username });
+    let user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ msg: 'Invalid credentials' });
     }
@@ -81,8 +80,8 @@ router.post('/login', async (req, res) => {
 
     jwt.sign(
       payload,
-      JWT_SECRET,
-      { expiresIn: 3600 }, // 1 hour
+      config.jwtSecret,
+      { expiresIn: config.jwtExpiresIn },
       (err, token) => {
         if (err) throw err;
         res.json({ token });

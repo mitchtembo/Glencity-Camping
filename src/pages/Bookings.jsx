@@ -1,6 +1,72 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Bookings = () => {
+  const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchBookings = async () => {
+      const token = localStorage.getItem('token');
+      
+      if (!token) {
+        navigate('/login?redirect=/bookings');
+        return;
+      }
+
+      try {
+        const config = {
+          headers: {
+            'x-auth-token': token,
+          },
+        };
+        
+        const res = await axios.get('http://localhost:5000/api/bookings/my-bookings', config);
+        setBookings(res.data);
+      } catch (err) {
+        console.error('Error fetching bookings:', err);
+        if (err.response?.status === 401) {
+          localStorage.removeItem('token');
+          navigate('/login?redirect=/bookings');
+        } else {
+          setError('Failed to load bookings. Please try again.');
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBookings();
+  }, [navigate]);
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
+  const calculateNights = (startDate, endDate) => {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const diffTime = Math.abs(end - start);
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  };
+
+  if (loading) {
+    return (
+      <main className="flex-1 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto text-center">
+          <div className="text-xl text-gray-600">Loading your bookings...</div>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="flex-1 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
@@ -10,19 +76,74 @@ const Bookings = () => {
             Here are your current and past bookings.
           </p>
         </div>
-        <div className="bg-white shadow-xl rounded-xl p-6 md:p-8 mb-12">
-          <div className="grid grid-cols-1 gap-8">
-            <div className="bg-gray-50 rounded-lg p-6">
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Cozy Corner Dorm</h3>
-              <p className="text-gray-600 mb-4">Check-in: 2024-07-01 | Check-out: 2024-07-05</p>
-              <p className="text-lg font-semibold text-[#b2d7e5]">$100 <span className="text-sm font-normal text-gray-500">total</span></p>
-            </div>
-            <div className="bg-gray-50 rounded-lg p-6">
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Serene Chalet</h3>
-              <p className="text-gray-600 mb-4">Check-in: 2024-08-15 | Check-out: 2024-08-20</p>
-              <p className="text-lg font-semibold text-[#b2d7e5]">$500 <span className="text-sm font-normal text-gray-500">total</span></p>
-            </div>
+        
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-md p-4 mb-6">
+            <p className="text-sm text-red-700">{error}</p>
           </div>
+        )}
+
+        <div className="bg-white shadow-xl rounded-xl p-6 md:p-8 mb-12">
+          {bookings.length === 0 ? (
+            <div className="text-center py-8">
+              <p className="text-gray-600 text-lg">You haven't made any bookings yet.</p>
+              <button
+                onClick={() => navigate('/accommodation')}
+                className="mt-4 px-6 py-3 bg-[#19abe5] text-white rounded-lg hover:bg-[#138ac2] transition-colors"
+              >
+                Browse Accommodations
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-8">
+              {bookings.map((booking) => (
+                <div key={booking._id} className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                  <div className="flex flex-col md:flex-row md:justify-between md:items-start">
+                    <div className="flex-1">
+                      <h3 className="text-xl font-bold text-gray-900 mb-2">
+                        {booking.accommodation?.name || 'Accommodation'}
+                      </h3>
+                      <div className="space-y-2">
+                        <p className="text-gray-600">
+                          <span className="font-medium">Check-in:</span> {formatDate(booking.startDate)}
+                        </p>
+                        <p className="text-gray-600">
+                          <span className="font-medium">Check-out:</span> {formatDate(booking.endDate)}
+                        </p>
+                        <p className="text-gray-600">
+                          <span className="font-medium">Duration:</span> {calculateNights(booking.startDate, booking.endDate)} night(s)
+                        </p>
+                        <p className="text-gray-600">
+                          <span className="font-medium">Guest:</span> {booking.guestName}
+                        </p>
+                        <p className="text-gray-600">
+                          <span className="font-medium">Status:</span> 
+                          <span className={`ml-1 px-2 py-1 rounded-full text-xs font-medium ${
+                            booking.status === 'confirmed' 
+                              ? 'bg-green-100 text-green-800' 
+                              : booking.status === 'pending'
+                              ? 'bg-yellow-100 text-yellow-800'
+                              : 'bg-red-100 text-red-800'
+                          }`}>
+                            {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
+                          </span>
+                        </p>
+                      </div>
+                    </div>
+                    <div className="mt-4 md:mt-0 md:ml-6 text-right">
+                      <p className="text-lg font-semibold text-[#19abe5]">
+                        ${booking.totalPrice.toFixed(2)}
+                        <span className="text-sm font-normal text-gray-500 block">total</span>
+                      </p>
+                      <p className="text-xs text-gray-500 mt-2">
+                        Booked on {formatDate(booking.createdAt)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </main>

@@ -5,14 +5,14 @@ const AvailabilityResults = ({ results, checkIn, checkOut }) => { // Add checkIn
   const navigate = useNavigate();
 
   const handleViewProperty = (accommodationId) => {
-    navigate(`/chalet/${accommodationId}`);
+    navigate(`/chalet/${accommodationId}`, { state: { checkIn, checkOut } });
   };
 
-  if (results.length === 0) {
+  if (!results || results.length === 0) {
     return (
       <section className="px-6 md:px-10 lg:px-20 py-12">
         <div className="max-w-7xl mx-auto text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">No Availability</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">No Accommodations Available</h2>
           <p className="text-gray-600">Unfortunately, there are no accommodations available for the selected dates or party size. Please try different dates or contact us for assistance.</p>
         </div>
       </section>

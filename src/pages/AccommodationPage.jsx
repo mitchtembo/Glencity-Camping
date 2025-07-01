@@ -1,19 +1,45 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import accommodationsData from '../data/accommodations.json'; // Renamed for clarity
+import axios from 'axios';
 import AvailabilityResults from '../components/AvailabilityResults'; // Import AvailabilityResults
+import accommodationsData from '../data/accommodations.json'; // Import local data as fallback
 
 const AccommodationPage = () => {
   const location = useLocation();
-  // results, checkIn, and checkOut will be passed via location.state from BookingWidget
   const { results, checkIn, checkOut } = location.state || {};
+  const [accommodations, setAccommodations] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // If there are no results passed (e.g. direct navigation to /accommodation), show all accommodations
-  const displayResults = results || accommodationsData.map(acc => ({ ...acc, isBooked: false }));
+  useEffect(() => {
+    const fetchAccommodations = async () => {
+      setLoading(true);
+      try {
+        setError(null);
+        const res = await axios.get('http://localhost:5000/api/accommodations');
+        setAccommodations(res.data);
+      } catch (err) {
+        console.error('Error fetching accommodations from API, using fallback data:', err);
+        setAccommodations(accommodationsData); // Fallback to local data
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    // If results are not available or are empty, fetch all accommodations
+    if (!results || results.length === 0) {
+      fetchAccommodations();
+    } else {
+      // If results are available, use them
+      setAccommodations(results);
+      setLoading(false);
+    }
+  }, [results]);
+
+  const displayResults = results || accommodations.map(acc => ({ ...acc, isBooked: false }));
 
   return (
-    <main className="flex-1"> {/* Removed padding here, as AvailabilityResults has its own */}
-      {/* The header/title section can remain here or be moved into AvailabilityResults if preferred */}
+    <main className="flex-1">
       <section className="px-6 md:px-10 lg:px-20 py-12">
         <div className="max-w-7xl mx-auto text-center">
           <h2 className="text-4xl font-extrabold text-gray-900 tracking-tight sm:text-5xl mb-4">
@@ -26,7 +52,13 @@ const AccommodationPage = () => {
           </p>
         </div>
       </section>
-      <AvailabilityResults results={displayResults} checkIn={checkIn} checkOut={checkOut} />
+      {loading ? (
+        <div className="text-center py-12">
+          <div className="text-xl text-gray-600">Loading accommodations...</div>
+        </div>
+      ) : (
+        <AvailabilityResults results={displayResults} checkIn={checkIn} checkOut={checkOut} />
+      )}
     </main>
   );
 };

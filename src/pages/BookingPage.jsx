@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { QRCodeSVG } from 'qrcode.react';
 import { AlertTriangle, Check } from 'lucide-react';
-import accommodationsData from '../data/accommodations.json'; // We'll need to update this data source
+import axios from 'axios';
+import accommodationsData from '../data/accommodations.json';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -13,19 +14,6 @@ import {
   calculateNights,
   formatValidationErrors 
 } from '../utils/dateValidation';
-
-// Helper function to simulate updating booking data (temporary)
-// In a real app, this would be a backend API call.
-const updateAccommodationBookings = (accommodationId, newBooking) => {
-  // NOTE: This is a client-side simulation and does not persist changes
-  // or handle concurrent bookings properly. A backend is required for a real system.
-  console.warn("Simulating booking update. Data is not persisted and may lead to inconsistencies.");
-  const accommodation = accommodationsData.find(acc => acc.id === parseInt(accommodationId));
-  if (accommodation) {
-    accommodation.bookings.push(newBooking);
-  }
-};
-
 
 const BookingPage = () => {
   const { id } = useParams();
@@ -46,12 +34,48 @@ const BookingPage = () => {
   const today = getTodayDate();
 
   useEffect(() => {
-    const selectedAccommodation = accommodationsData.find(acc => acc.id === parseInt(id));
-    setAccommodation(selectedAccommodation);
+    
+    const fetchAccommodation = async () => {
+      // Try to find accommodation in local data first
+      const localAcc = accommodationsData.find(acc => acc.id === parseInt(id));
+      if (localAcc) {
+        setAccommodation(localAcc);
+        return;
+      }
+
+      // If not found locally, fetch from API
+      try {
+        const res = await axios.get(`http://localhost:5000/api/accommodations/${id}`);
+        setAccommodation(res.data);
+      } catch (err) {
+        console.error('Error fetching accommodation from API:', err);
+        // Handle case where accommodation is not found in both local and API
+        setAccommodation(null);
+      }
+    };
+
+    fetchAccommodation();
 
     if (location.state) {
       setCheckIn(location.state.checkIn || '');
       setCheckOut(location.state.checkOut || '');
+    } else {
+      // Check for stored booking data from localStorage
+      const storedBookingData = localStorage.getItem('pendingBookingData');
+      if (storedBookingData) {
+        try {
+          const bookingData = JSON.parse(storedBookingData);
+          if (bookingData.accommodationId === id) {
+            setCheckIn(bookingData.checkIn || '');
+            setCheckOut(bookingData.checkOut || '');
+            // Clear the stored data after using it
+            localStorage.removeItem('pendingBookingData');
+          }
+        } catch (err) {
+          console.error('Error parsing stored booking data:', err);
+          localStorage.removeItem('pendingBookingData');
+        }
+      }
     }
   }, [id, location.state]);
 
@@ -116,28 +140,76 @@ const BookingPage = () => {
     // Clear any previous errors
     setValidationErrors([]);
 
-    // Simulate payment processing delay
-    setTimeout(() => {
-      // Simulate payment success
-      console.log("Simulating payment processing...");
+    const handleBooking = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        // Handle case where user is not logged in
+        setValidationErrors(['You must be logged in to make a booking.']);
+        setIsProcessing(false);
+        return;
+      }
 
-      const newBooking = { from: checkIn, to: checkOut };
-      updateAccommodationBookings(id, newBooking); // Simulate updating the bookings
-
-      const details = {
-        accommodationName: accommodation.name,
+      const newBooking = {
+        accommodationId: id,
+        startDate: checkIn,
+        endDate: checkOut,
         guestName,
         guestEmail,
-        checkIn,
-        checkOut,
-        nights: validation.nights,
         totalPrice: accommodation.price * validation.nights,
       };
-      
-      setBookingDetails(details);
-      setIsBooked(true);
-      setIsProcessing(false);
-    }, 1500); // 1.5 second delay to simulate processing
+
+      try {
+        const config = {
+          headers: {
+            'Content-Type': 'application/json',
+            'x-auth-token': token,
+          },
+        };
+        const body = JSON.stringify(newBooking);
+        const res = await axios.post('http://localhost:5000/api/bookings', body, config);
+
+        const details = {
+          accommodationName: accommodation.name,
+          guestName,
+          guestEmail,
+          checkIn,
+          checkOut,
+          nights: validation.nights,
+          totalPrice: accommodation.price * validation.nights,
+        };
+
+        setBookingDetails(details);
+        setIsBooked(true);
+      } catch (err) {
+        console.error(err);
+        if (err.response?.status === 409) {
+          setValidationErrors(['Accommodation already booked for selected dates. Please choose different dates.']);
+        } else if (err.response?.status === 400) {
+          // Handle validation errors from backend
+          const errors = err.response.data.errors || [err.response.data.msg || 'Invalid input data'];
+          setValidationErrors(errors);
+        } else if (err.response?.status === 401) {
+          setValidationErrors(['You must be logged in to make a booking.']);
+          // Redirect to login
+          setTimeout(() => {
+            const bookingData = {
+              accommodationId: id,
+              checkIn,
+              checkOut,
+              accommodationName: accommodation.name
+            };
+            localStorage.setItem('pendingBookingData', JSON.stringify(bookingData));
+            navigate(`/login?redirect=/booking/${id}`);
+          }, 2000);
+        } else {
+          setValidationErrors(['Booking failed. Please try again.']);
+        }
+      } finally {
+        setIsProcessing(false);
+      }
+    };
+
+    handleBooking();
   };
 
   if (!accommodation) {

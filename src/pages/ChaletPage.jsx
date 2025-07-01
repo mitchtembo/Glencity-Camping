@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import accommodations from '../data/accommodations.json';
 
 const ChaletPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { checkIn, checkOut } = location.state || {};
   const chalet = accommodations.find((acc) => acc.id === parseInt(id));
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
@@ -13,7 +15,20 @@ const ChaletPage = () => {
   }
 
   const handleBookNow = () => {
-    navigate(`/booking/${id}`);
+    const token = localStorage.getItem('token');
+    if (token) {
+      navigate(`/booking/${id}`, { state: { checkIn, checkOut } });
+    } else {
+      // Store booking data before redirecting to login
+      const bookingData = {
+        accommodationId: id,
+        checkIn,
+        checkOut,
+        accommodationName: chalet.name
+      };
+      localStorage.setItem('pendingBookingData', JSON.stringify(bookingData));
+      navigate(`/login?redirect=/booking/${id}`);
+    }
   };
 
   const nextImage = () => {
