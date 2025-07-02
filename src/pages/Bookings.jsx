@@ -133,6 +133,16 @@ const Bookings = () => {
                       <p className="text-xs text-gray-500 mt-2">
                         Booked on {formatDate(booking.createdAt)}
                       </p>
+                      {booking.qrCode && (
+                        <div className="mt-4 flex flex-col items-center">
+                          <p className="text-xs text-gray-500 mb-2">Booking QR Code</p>
+                          <img 
+                            src={booking.qrCode} 
+                            alt="Booking QR Code" 
+                            className="w-24 h-24 border border-gray-200 rounded"
+                          />
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>

@@ -44,6 +44,10 @@ const bookingSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  qrCode: {
+    type: String,
+    required: false,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

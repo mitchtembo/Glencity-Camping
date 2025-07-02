@@ -176,6 +176,7 @@ const BookingPage = () => {
           checkOut,
           nights: validation.nights,
           totalPrice: accommodation.price * validation.nights,
+          qrCode: res.data.booking.qrCode, // Get QR code from server response
         };
 
         setBookingDetails(details);
@@ -217,7 +218,6 @@ const BookingPage = () => {
   }
 
   if (isBooked && bookingDetails) {
-    const qrCodeValue = `Booking Confirmed for: ${bookingDetails.accommodationName}\nGuest: ${bookingDetails.guestName}\nCheck-in: ${bookingDetails.checkIn}\nCheck-out: ${bookingDetails.checkOut}\nNights: ${bookingDetails.nights}\nPrice: $${bookingDetails.totalPrice.toFixed(2)}`;
     return (
       <main className="flex-1 py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl mx-auto bg-white shadow-xl rounded-xl p-6 md:p-8">
@@ -230,7 +230,17 @@ const BookingPage = () => {
           </div>
           
           <div className="text-center mb-6">
-            <QRCodeSVG value={qrCodeValue} size={128} level="H" />
+            {bookingDetails.qrCode ? (
+              <img 
+                src={bookingDetails.qrCode} 
+                alt="Booking QR Code" 
+                className="w-32 h-32 mx-auto border border-gray-200 rounded"
+              />
+            ) : (
+              <div className="w-32 h-32 mx-auto bg-gray-100 rounded flex items-center justify-center">
+                <span className="text-gray-500 text-sm">QR Code</span>
+              </div>
+            )}
           </div>
           
           <div className="space-y-3 bg-gray-50 rounded-lg p-6">

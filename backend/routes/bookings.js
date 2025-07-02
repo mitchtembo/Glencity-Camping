@@ -6,6 +6,7 @@ const Accommodation = require('../models/Accommodation');
 const User = require('../models/User');
 const { isValidObjectId } = require('../utils/validation');
 const { validateBookingCreation, validateAvailabilityCheck } = require('../middleware/validation');
+const QRCode = require('qrcode');
 
 /**
  * @swagger
@@ -118,6 +119,16 @@ router.post('/', auth, validateBookingCreation, async (req, res) => {
       return res.status(404).json({ msg: 'Accommodation not found' });
     }
 
+    // Generate QR code data
+    const qrCodeData = `Booking Confirmation\nAccommodation: ${accommodation.name}\nGuest: ${guestName}\nCheck-in: ${new Date(startDate).toLocaleDateString()}\nCheck-out: ${new Date(endDate).toLocaleDateString()}\nTotal: $${totalPrice.toFixed(2)}\nBooking ID: ${Date.now()}`;
+    
+    // Generate QR code as data URL
+    const qrCodeDataURL = await QRCode.toDataURL(qrCodeData, {
+      errorCorrectionLevel: 'H',
+      width: 256,
+      margin: 2
+    });
+
     const newBooking = new Booking({
       user: req.user.id, // from auth middleware
       accommodation: accommodationId,
@@ -126,6 +137,7 @@ router.post('/', auth, validateBookingCreation, async (req, res) => {
       guestName,
       guestEmail,
       totalPrice,
+      qrCode: qrCodeDataURL,
       status: 'confirmed'
     });
 
