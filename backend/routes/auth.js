@@ -32,6 +32,9 @@ const { config } = require('../config/environment');
  *               - email
  *               - password
  *             properties:
+ *               username:
+ *                 type: string
+ *                 description: User's username (optional)
  *               name:
  *                 type: string
  *                 description: User's first name
@@ -83,7 +86,7 @@ const { config } = require('../config/environment');
 // @desc    Register a new user
 // @access  Public
 router.post('/register', async (req, res) => {
-  const { username, name, lastName, phone, email, password, role } = req.body;
+  const { name, lastName, phone, email, password, role } = req.body;
 
   try {
     let user = await User.findOne({ email });
@@ -92,7 +95,6 @@ router.post('/register', async (req, res) => {
     }
 
     user = new User({
-      username,
       name,
       lastName,
       phone,

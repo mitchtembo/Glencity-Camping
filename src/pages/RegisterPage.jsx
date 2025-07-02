@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -7,7 +7,6 @@ import { Label } from "@/components/ui/label";
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
-    username: '',
     name: '',
     lastName: '',
     phone: '',
@@ -22,7 +21,7 @@ const RegisterPage = () => {
   const navigate = useNavigate();
   const { register } = useAuth();
 
-  const { username, name, lastName, phone, email, password, password2 } = formData;
+  const { name, lastName, phone, email, password, password2 } = formData;
 
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -37,7 +36,7 @@ const RegisterPage = () => {
     } else {
       setIsLoading(true);
       try {
-        const result = await register({ username, name, lastName, phone, email, password, role: 'user' });
+        const result = await register({ name, lastName, phone, email, password, role: 'user' });
         
         if (result.success) {
           setSuccessMessage('Registration successful! Redirecting...');
@@ -85,16 +84,6 @@ const RegisterPage = () => {
                 <p className="text-sm text-green-700">{successMessage}</p>
               </div>
             )}
-            <div>
-              <Label htmlFor="username">Username</Label>
-              <Input
-                type="text"
-                name="username"
-                value={username}
-                onChange={onChange}
-                required
-              />
-            </div>
             <div>
               <Label htmlFor="name">Name</Label>
               <Input
@@ -169,6 +158,19 @@ const RegisterPage = () => {
               )}
             </Button>
           </form>
+          
+          {/* Login Link */}
+          <div className="mt-6 text-center">
+            <p className="text-sm text-gray-600">
+              Already have an account?{' '}
+              <Link
+                to={`/login${window.location.search}`}
+                className="font-medium text-blue-600 hover:text-blue-500 transition-colors duration-200"
+              >
+                Click here to login
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
     </main>
