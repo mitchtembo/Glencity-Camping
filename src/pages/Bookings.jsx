@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
 
 const Bookings = () => {
@@ -7,24 +8,17 @@ const Bookings = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     const fetchBookings = async () => {
-      const token = localStorage.getItem('token');
-      
-      if (!token) {
+      if (!isAuthenticated) {
         navigate('/login?redirect=/bookings');
         return;
       }
 
       try {
-        const config = {
-          headers: {
-            'x-auth-token': token,
-          },
-        };
-        
-        const res = await axios.get('http://localhost:5000/api/bookings/my-bookings', config);
+        const res = await axios.get('http://localhost:5000/api/bookings/my-bookings');
         setBookings(res.data);
       } catch (err) {
         console.error('Error fetching bookings:', err);

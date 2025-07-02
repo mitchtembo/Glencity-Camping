@@ -1,21 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { NavLink, useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
+  const { isAuthenticated, user, logout } = useAuth();
 
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      setIsLoggedIn(true);
-    }
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    setIsLoggedIn(false);
+  const handleLogout = async () => {
+    await logout();
     navigate('/');
   };
 
@@ -86,7 +79,7 @@ const Navbar = () => {
         >
           My Bookings
         </NavLink>
-        {!isLoggedIn ? (
+        {!isAuthenticated ? (
           <>
             <NavLink
               to="/login"
@@ -106,12 +99,17 @@ const Navbar = () => {
             </NavLink>
           </>
         ) : (
-          <button
-            onClick={handleLogout}
-            className="text-sm font-medium leading-normal text-slate-700 hover:text-[#b2d7e5] transition-colors"
-          >
-            Logout
-          </button>
+          <>
+            <span className="text-sm font-medium text-slate-700">
+              Welcome, {user?.name || 'User'}
+            </span>
+            <button
+              onClick={handleLogout}
+              className="text-sm font-medium leading-normal text-slate-700 hover:text-[#b2d7e5] transition-colors"
+            >
+              Logout
+            </button>
+          </>
         )}
         <button
           className="flex min-w-[100px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-6 bg-[#b2d7e5] text-slate-900 text-sm font-bold leading-normal tracking-[0.015em] hover:bg-opacity-80 transition-colors"

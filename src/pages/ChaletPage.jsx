@@ -1,22 +1,54 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import accommodations from '../data/accommodations.json';
+import { useAuth } from '../contexts/AuthContext';
+import axios from 'axios';
 
 const ChaletPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
   const { checkIn, checkOut } = location.state || {};
-  const chalet = accommodations.find((acc) => acc.id === parseInt(id));
+  const { isAuthenticated } = useAuth();
+  const [chalet, setChalet] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  useEffect(() => {
+    const fetchChalet = async () => {
+      if (!id || id === 'undefined') {
+        setError('Invalid chalet ID');
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const res = await axios.get(`http://localhost:5000/api/accommodations/${id}`);
+        setChalet(res.data);
+      } catch (err) {
+        setError('Chalet not found');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchChalet();
+  }, [id]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   if (!chalet) {
     return <div>Chalet not found</div>;
   }
 
   const handleBookNow = () => {
-    const token = localStorage.getItem('token');
-    if (token) {
+    if (isAuthenticated) {
       navigate(`/booking/${id}`, { state: { checkIn, checkOut } });
     } else {
       // Store booking data before redirecting to login

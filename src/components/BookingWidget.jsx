@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, Calendar, AlertTriangle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import accommodations from '../data/accommodations.json';
+import axios from 'axios';
 import { 
   validateBookingDates, 
   getTodayDate, 
@@ -28,7 +28,21 @@ const BookingWidget = ({ accommodation }) => {
   const [checkIn, setCheckIn] = useState('');
   const [checkOut, setCheckOut] = useState('');
   const [validationErrors, setValidationErrors] = useState([]);
+  const [accommodations, setAccommodations] = useState([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchAccommodations = async () => {
+      try {
+        const res = await axios.get('http://localhost:5000/api/accommodations');
+        setAccommodations(res.data);
+      } catch (err) {
+        console.error('Error fetching accommodations:', err);
+      }
+    };
+
+    fetchAccommodations();
+  }, []);
 
   const handleDateChange = (type, value) => {
     if (type === 'checkIn') {
@@ -69,20 +83,25 @@ const BookingWidget = ({ accommodation }) => {
     
     // If a specific accommodation is being viewed, navigate to its booking page
     if (accommodation) {
+      // Handle both MongoDB _id and regular id fields
+      const accommodationId = accommodation._id || accommodation.id;
       // Store booking data before navigation
       const bookingData = {
-        accommodationId: accommodation.id,
+        accommodationId: accommodationId,
         checkIn,
         checkOut,
         accommodationName: accommodation.name
       };
       localStorage.setItem('tempBookingData', JSON.stringify(bookingData));
-      navigate(`/booking/${accommodation.id}`, { state: { checkIn, checkOut } });
+      navigate(`/booking/${accommodationId}`, { state: { checkIn, checkOut } });
     } else {
       // Otherwise, filter all accommodations by availability
       const results = accommodations.map(acc => ({
         ...acc,
-        isBooked: isBooked(acc, checkIn, checkOut)
+        isBooked: isBooked(acc, checkIn, checkOut),
+        // Ensure we have both id and _id for compatibility
+        id: acc.id || acc._id,
+        _id: acc._id || acc.id
       }));
       navigate('/accommodation', { state: { results, checkIn, checkOut } });
     }

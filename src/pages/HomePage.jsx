@@ -1,10 +1,24 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import BookingWidget from '../components/BookingWidget';
-import accommodations from '../data/accommodations.json';
+import axios from 'axios';
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const [accommodations, setAccommodations] = useState([]);
+
+  useEffect(() => {
+    const fetchAccommodations = async () => {
+      try {
+        const res = await axios.get('http://localhost:5000/api/accommodations');
+        setAccommodations(res.data);
+      } catch (err) {
+        console.error('Error fetching accommodations:', err);
+      }
+    };
+
+    fetchAccommodations();
+  }, []);
 
   const handleSearch = (criteria) => {
     const { checkIn, checkOut, guests } = criteria;
@@ -20,7 +34,7 @@ const HomePage = () => {
     });
 
     if (available.length > 0) {
-      navigate('/accommodation', { state: { results: available } });
+      navigate('/accommodation', { state: { results: available, checkIn, checkOut } });
     } else {
       alert('No accommodations available for the selected dates.');
     }

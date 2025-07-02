@@ -7,6 +7,83 @@ const User = require('../models/User');
 const { isValidObjectId } = require('../utils/validation');
 const { validateBookingCreation, validateAvailabilityCheck } = require('../middleware/validation');
 
+/**
+ * @swagger
+ * tags:
+ *   name: Bookings
+ *   description: Booking management endpoints
+ */
+
+/**
+ * @swagger
+ * /api/bookings:
+ *   post:
+ *     summary: Create a new booking
+ *     tags: [Bookings]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - accommodationId
+ *               - startDate
+ *               - endDate
+ *               - guestName
+ *               - guestEmail
+ *               - totalPrice
+ *             properties:
+ *               accommodationId:
+ *                 type: string
+ *                 description: ID of the accommodation to book
+ *               startDate:
+ *                 type: string
+ *                 format: date
+ *                 description: Check-in date
+ *               endDate:
+ *                 type: string
+ *                 format: date
+ *                 description: Check-out date
+ *               guestName:
+ *                 type: string
+ *                 description: Name of the guest
+ *               guestEmail:
+ *                 type: string
+ *                 format: email
+ *                 description: Email of the guest
+ *               totalPrice:
+ *                 type: number
+ *                 description: Total price for the booking
+ *     responses:
+ *       201:
+ *         description: Booking created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Booking'
+ *       400:
+ *         description: Validation error or conflicting booking
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+
 // @route   POST api/bookings
 // @desc    Create a booking
 // @access  Private

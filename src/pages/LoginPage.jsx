@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { useAuth } from '../contexts/AuthContext';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -11,7 +11,9 @@ const LoginPage = () => {
     password: '',
   });
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const { email, password } = formData;
 
@@ -20,24 +22,32 @@ const LoginPage = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+    setIsLoading(true);
+    
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/login', formData);
-      localStorage.setItem('token', res.data.token);
+      const result = await login(formData);
       
-      // Check for stored booking data and redirect path
-      const redirectPath = new URLSearchParams(window.location.search).get('redirect');
-      const storedBookingData = localStorage.getItem('pendingBookingData');
-      
-      if (storedBookingData && redirectPath) {
-        // Clear the stored data as we're about to use it
-        localStorage.removeItem('pendingBookingData');
-        navigate(redirectPath);
+      if (result.success) {
+        // Check for stored booking data and redirect path
+        const redirectPath = new URLSearchParams(window.location.search).get('redirect');
+        const storedBookingData = localStorage.getItem('pendingBookingData');
+        
+        if (storedBookingData && redirectPath) {
+          // Clear the stored data as we're about to use it
+          localStorage.removeItem('pendingBookingData');
+          navigate(redirectPath);
+        } else {
+          navigate(redirectPath || '/');
+        }
       } else {
-        navigate(redirectPath || '/');
+        setError(result.error || 'Login failed');
       }
     } catch (err) {
-      setError('Invalid credentials');
+      setError('Login failed. Please try again.');
       console.error(err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -74,8 +84,18 @@ const LoginPage = () => {
                 required
               />
             </div>
-            <Button type="submit" className="w-full">
-              Login
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? (
+                <div className="flex items-center justify-center">
+                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Logging in...
+                </div>
+              ) : (
+                'Login'
+              )}
             </Button>
           </form>
         </div>

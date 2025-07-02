@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { QRCodeSVG } from 'qrcode.react';
 import { AlertTriangle, Check } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
-import accommodationsData from '../data/accommodations.json';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -19,6 +19,7 @@ const BookingPage = () => {
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
 
   const [accommodation, setAccommodation] = useState(null);
   const [checkIn, setCheckIn] = useState('');
@@ -34,22 +35,12 @@ const BookingPage = () => {
   const today = getTodayDate();
 
   useEffect(() => {
-    
     const fetchAccommodation = async () => {
-      // Try to find accommodation in local data first
-      const localAcc = accommodationsData.find(acc => acc.id === parseInt(id));
-      if (localAcc) {
-        setAccommodation(localAcc);
-        return;
-      }
-
-      // If not found locally, fetch from API
       try {
         const res = await axios.get(`http://localhost:5000/api/accommodations/${id}`);
         setAccommodation(res.data);
       } catch (err) {
         console.error('Error fetching accommodation from API:', err);
-        // Handle case where accommodation is not found in both local and API
         setAccommodation(null);
       }
     };
@@ -141,8 +132,7 @@ const BookingPage = () => {
     setValidationErrors([]);
 
     const handleBooking = async () => {
-      const token = localStorage.getItem('token');
-      if (!token) {
+      if (!isAuthenticated) {
         // Handle case where user is not logged in
         setValidationErrors(['You must be logged in to make a booking.']);
         setIsProcessing(false);
@@ -159,14 +149,7 @@ const BookingPage = () => {
       };
 
       try {
-        const config = {
-          headers: {
-            'Content-Type': 'application/json',
-            'x-auth-token': token,
-          },
-        };
-        const body = JSON.stringify(newBooking);
-        const res = await axios.post('http://localhost:5000/api/bookings', body, config);
+        const res = await axios.post('http://localhost:5000/api/bookings', newBooking);
 
         const details = {
           accommodationName: accommodation.name,

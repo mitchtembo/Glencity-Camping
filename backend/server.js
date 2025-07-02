@@ -1,9 +1,28 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const { config, loadSecretsFromProvider } = require('./config/environment');
+const { specs, swaggerUi } = require('./config/swagger');
 
 const app = express();
+
+/**
+ * @swagger
+ * /:
+ *   get:
+ *     summary: API Health Check
+ *     description: Returns a simple message to confirm the API is running
+ *     tags: [Health]
+ *     responses:
+ *       200:
+ *         description: API is running successfully
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               example: "Glencity Camping API is running..."
+ */
 
 // Initialize server with secure configuration
 const initializeServer = async () => {
@@ -13,11 +32,19 @@ const initializeServer = async () => {
     
     // Configure CORS
     app.use(cors({
-      origin: secureConfig.corsOrigin,
+      origin: 'http://localhost:5173', // Frontend URL
       credentials: true
     }));
     
     app.use(express.json());
+    app.use(cookieParser());
+
+    // Swagger Documentation
+    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, {
+      explorer: true,
+      customCss: '.swagger-ui .topbar { display: none }',
+      customSiteTitle: 'Glencity Camping API Documentation'
+    }));
 
     // Connect to MongoDB with secure configuration
     await mongoose.connect(secureConfig.mongoUri, { 

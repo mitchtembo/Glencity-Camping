@@ -58,7 +58,7 @@ const config = {
   nodeEnv: process.env.NODE_ENV || 'development',
   
   // Security
-  corsOrigin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+  corsOrigin: 'http://localhost:5179',
   
   // Feature flags
   isDevelopment: process.env.NODE_ENV === 'development',

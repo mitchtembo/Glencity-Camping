@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { useAuth } from '../contexts/AuthContext';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
+    username: '',
     name: '',
     lastName: '',
     phone: '',
@@ -19,8 +20,9 @@ const RegisterPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const navigate = useNavigate();
+  const { register } = useAuth();
 
-  const { name, lastName, phone, email, password, password2 } = formData;
+  const { username, name, lastName, phone, email, password, password2 } = formData;
 
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -35,25 +37,29 @@ const RegisterPage = () => {
     } else {
       setIsLoading(true);
       try {
-        const res = await axios.post('http://localhost:5000/api/auth/register', { name, lastName, phone, email, password, role: 'user' });
-        localStorage.setItem('token', res.data.token);
-        setSuccessMessage('Registration successful! Redirecting...');
+        const result = await register({ username, name, lastName, phone, email, password, role: 'user' });
         
-        // Wait a moment to show the success message before redirecting
-        setTimeout(() => {
-          const redirectPath = new URLSearchParams(window.location.search).get('redirect');
-          const storedBookingData = localStorage.getItem('pendingBookingData');
+        if (result.success) {
+          setSuccessMessage('Registration successful! Redirecting...');
           
-          if (storedBookingData && redirectPath) {
-            // Clear the stored data as we're about to use it
-            localStorage.removeItem('pendingBookingData');
-            navigate(redirectPath);
-          } else {
-            navigate(redirectPath || '/');
-          }
-        }, 2000);
+          // Wait a moment to show the success message before redirecting
+          setTimeout(() => {
+            const redirectPath = new URLSearchParams(window.location.search).get('redirect');
+            const storedBookingData = localStorage.getItem('pendingBookingData');
+            
+            if (storedBookingData && redirectPath) {
+              // Clear the stored data as we're about to use it
+              localStorage.removeItem('pendingBookingData');
+              navigate(redirectPath);
+            } else {
+              navigate(redirectPath || '/');
+            }
+          }, 2000);
+        } else {
+          setError(result.error || 'Registration failed');
+        }
       } catch (err) {
-        setError('User already exists or registration failed');
+        setError('Registration failed. Please try again.');
         console.error(err);
       } finally {
         setIsLoading(false);
@@ -79,6 +85,16 @@ const RegisterPage = () => {
                 <p className="text-sm text-green-700">{successMessage}</p>
               </div>
             )}
+            <div>
+              <Label htmlFor="username">Username</Label>
+              <Input
+                type="text"
+                name="username"
+                value={username}
+                onChange={onChange}
+                required
+              />
+            </div>
             <div>
               <Label htmlFor="name">Name</Label>
               <Input

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import AvailabilityResults from '../components/AvailabilityResults'; // Import AvailabilityResults
-import accommodationsData from '../data/accommodations.json'; // Import local data as fallback
 
 const AccommodationPage = () => {
   const location = useLocation();
@@ -19,8 +18,8 @@ const AccommodationPage = () => {
         const res = await axios.get('http://localhost:5000/api/accommodations');
         setAccommodations(res.data);
       } catch (err) {
-        console.error('Error fetching accommodations from API, using fallback data:', err);
-        setAccommodations(accommodationsData); // Fallback to local data
+        console.error('Error fetching accommodations from API:', err);
+        setError('Failed to load accommodations. Please try again later.');
       } finally {
         setLoading(false);
       }
@@ -36,7 +35,13 @@ const AccommodationPage = () => {
     }
   }, [results]);
 
-  const displayResults = results || accommodations.map(acc => ({ ...acc, isBooked: false }));
+  const displayResults = results || accommodations.map(acc => ({ 
+    ...acc, 
+    isBooked: false,
+    // Ensure we have both id and _id for compatibility
+    id: acc.id || acc._id,
+    _id: acc._id || acc.id
+  }));
 
   return (
     <main className="flex-1">
