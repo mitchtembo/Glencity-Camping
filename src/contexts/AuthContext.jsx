@@ -16,6 +16,45 @@ export const useAuth = () => {
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = API_BASE_URL;
 
+// Add error logging for production debugging
+if (!import.meta.env.DEV) {
+  axios.interceptors.request.use(
+    (config) => {
+      console.log('🔄 API Request:', {
+        url: config.url,
+        method: config.method,
+        baseURL: config.baseURL,
+        withCredentials: config.withCredentials
+      });
+      return config;
+    },
+    (error) => {
+      console.error('❌ Request Error:', error);
+      return Promise.reject(error);
+    }
+  );
+
+  axios.interceptors.response.use(
+    (response) => {
+      console.log('✅ API Response:', {
+        url: response.config.url,
+        status: response.status,
+        data: response.data
+      });
+      return response;
+    },
+    (error) => {
+      console.error('❌ API Response Error:', {
+        url: error.config?.url,
+        status: error.response?.status,
+        message: error.response?.data?.msg || error.message,
+        headers: error.response?.headers
+      });
+      return Promise.reject(error);
+    }
+  );
+}
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);

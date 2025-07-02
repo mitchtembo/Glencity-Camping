@@ -50,16 +50,29 @@ const initializeServer = async () => {
           
         // Flatten the array in case of nested arrays and filter out empty values
         const flattenedOrigins = allowedOrigins.flat().filter(origin => origin && origin.trim());
+        
+        // In production, also allow any Vercel preview domains
+        if (secureConfig.nodeEnv === 'production') {
+          if (origin.endsWith('.vercel.app') || origin.includes('glencity-camping')) {
+            console.log(`✅ Allowing Vercel domain: ${origin}`);
+            return callback(null, true);
+          }
+        }
           
         if (flattenedOrigins.includes(origin)) {
+          console.log(`✅ Allowing configured origin: ${origin}`);
           return callback(null, true);
         }
         
-        console.log(`CORS blocked request from origin: ${origin}`);
+        console.log(`❌ CORS blocked request from origin: ${origin}`);
         console.log(`Allowed origins: ${flattenedOrigins.join(', ')}`);
+        console.log(`Environment: ${secureConfig.nodeEnv}`);
         callback(new Error('Not allowed by CORS'));
       },
-      credentials: true
+      credentials: true,
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token'],
+      optionsSuccessStatus: 200
     };
     
     app.use(cors(corsOptions));
