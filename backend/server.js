@@ -32,7 +32,7 @@ const initializeServer = async () => {
     
     // Configure CORS
     app.use(cors({
-      origin: 'http://localhost:5173', // Frontend URL
+      origin: secureConfig.corsOrigin,
       credentials: true
     }));
     
@@ -47,16 +47,30 @@ const initializeServer = async () => {
     }));
 
     // Connect to MongoDB with secure configuration
-    await mongoose.connect(secureConfig.mongoUri, { 
-      useNewUrlParser: true, 
-      useUnifiedTopology: true 
-    });
+    await mongoose.connect(secureConfig.mongoUri);
     
     console.log("MongoDB database connection established successfully");
     console.log(`Environment: ${secureConfig.nodeEnv}`);
 
     app.get('/', (req, res) => {
-      res.send('Glencity Camping API is running...');
+      res.json({
+        message: 'Glencity Camping API is running...',
+        version: '1.0.0',
+        environment: secureConfig.nodeEnv,
+        timestamp: new Date().toISOString(),
+        status: 'healthy'
+      });
+    });
+
+    // Health check endpoint
+    app.get('/health', (req, res) => {
+      res.json({
+        status: 'healthy',
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime(),
+        environment: secureConfig.nodeEnv,
+        version: '1.0.0'
+      });
     });
 
     // Define Routes
