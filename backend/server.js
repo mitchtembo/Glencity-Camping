@@ -43,15 +43,20 @@ const initializeServer = async () => {
           }
         }
         
-        // Check against configured CORS origin
+        // Check against configured CORS origin(s)
         const allowedOrigins = Array.isArray(secureConfig.corsOrigin) 
           ? secureConfig.corsOrigin 
           : [secureConfig.corsOrigin];
           
-        if (allowedOrigins.includes(origin)) {
+        // Flatten the array in case of nested arrays and filter out empty values
+        const flattenedOrigins = allowedOrigins.flat().filter(origin => origin && origin.trim());
+          
+        if (flattenedOrigins.includes(origin)) {
           return callback(null, true);
         }
         
+        console.log(`CORS blocked request from origin: ${origin}`);
+        console.log(`Allowed origins: ${flattenedOrigins.join(', ')}`);
         callback(new Error('Not allowed by CORS'));
       },
       credentials: true
