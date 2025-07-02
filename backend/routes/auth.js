@@ -124,8 +124,10 @@ router.post('/register', async (req, res) => {
         res.cookie('auth_token', token, {
           httpOnly: true,
           secure: process.env.NODE_ENV === 'production', // HTTPS in production
-          sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax', // More permissive in development
+          sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // Allow cross-site cookies in production
           maxAge: 24 * 60 * 60 * 1000, // 24 hours
+          path: '/', // Ensure cookie is available for all paths
+          domain: process.env.NODE_ENV === 'production' ? undefined : undefined, // Let browser set domain
         });
         
         res.json({ 
@@ -233,8 +235,10 @@ router.post('/login', async (req, res) => {
         res.cookie('auth_token', token, {
           httpOnly: true,
           secure: process.env.NODE_ENV === 'production', // HTTPS in production
-          sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax', // More permissive in development
+          sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // Allow cross-site cookies in production
           maxAge: 24 * 60 * 60 * 1000, // 24 hours
+          path: '/', // Ensure cookie is available for all paths
+          domain: process.env.NODE_ENV === 'production' ? undefined : undefined, // Let browser set domain
         });
         
         res.json({ 
@@ -347,7 +351,13 @@ router.get('/', auth, async (req, res) => {
 // @desc    Logout user and clear cookie
 // @access  Public
 router.post('/logout', (req, res) => {
-  res.clearCookie('auth_token');
+  // Clear cookie with same options as when it was set
+  res.clearCookie('auth_token', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    path: '/'
+  });
   res.json({ success: true, message: 'Logged out successfully' });
 });
 

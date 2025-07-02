@@ -117,6 +117,16 @@ export const AuthProvider = ({ children }) => {
       if (response.data.success) {
         setUser(response.data.user);
         setIsAuthenticated(true);
+        // In production, add a small delay to ensure cookie is set
+        if (!import.meta.env.DEV) {
+          await new Promise(resolve => setTimeout(resolve, 500));
+        }
+        // Force a check of auth status to ensure cookies are working
+        try {
+          await checkAuthStatus();
+        } catch (error) {
+          console.warn('Auth status check failed after login:', error);
+        }
         return { success: true, user: response.data.user };
       }
     } catch (error) {
@@ -133,6 +143,16 @@ export const AuthProvider = ({ children }) => {
       if (response.data.success) {
         setUser(response.data.user);
         setIsAuthenticated(true);
+        // In production, add a small delay to ensure cookie is set
+        if (!import.meta.env.DEV) {
+          await new Promise(resolve => setTimeout(resolve, 500));
+        }
+        // Force a check of auth status to ensure cookies are working
+        try {
+          await checkAuthStatus();
+        } catch (error) {
+          console.warn('Auth status check failed after registration:', error);
+        }
         return { success: true, user: response.data.user };
       }
     } catch (error) {

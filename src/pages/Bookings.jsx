@@ -9,22 +9,29 @@ const Bookings = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, loading: authLoading } = useAuth();
 
   useEffect(() => {
     const fetchBookings = async () => {
+      // Wait for auth context to finish loading
+      if (authLoading) {
+        return;
+      }
+
       if (!isAuthenticated) {
         navigate('/login?redirect=/bookings');
         return;
       }
 
       try {
+        setLoading(true);
         const res = await axios.get(API_ENDPOINTS.BOOKINGS.MY_BOOKINGS);
         setBookings(res.data);
+        setError('');
       } catch (err) {
         console.error('Error fetching bookings:', err);
         if (err.response?.status === 401) {
-          localStorage.removeItem('token');
+          // Authentication failed, redirect to login
           navigate('/login?redirect=/bookings');
         } else {
           setError('Failed to load bookings. Please try again.');
@@ -35,7 +42,7 @@ const Bookings = () => {
     };
 
     fetchBookings();
-  }, [navigate]);
+  }, [navigate, isAuthenticated, authLoading]);
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
