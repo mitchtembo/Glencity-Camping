@@ -31,10 +31,33 @@ const initializeServer = async () => {
     const secureConfig = await loadSecretsFromProvider();
     
     // Configure CORS
-    app.use(cors({
-      origin: secureConfig.corsOrigin,
+    const corsOptions = {
+      origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        
+        if (secureConfig.nodeEnv === 'development') {
+          // In development, allow localhost on any port
+          if (origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:')) {
+            return callback(null, true);
+          }
+        }
+        
+        // Check against configured CORS origin
+        const allowedOrigins = Array.isArray(secureConfig.corsOrigin) 
+          ? secureConfig.corsOrigin 
+          : [secureConfig.corsOrigin];
+          
+        if (allowedOrigins.includes(origin)) {
+          return callback(null, true);
+        }
+        
+        callback(new Error('Not allowed by CORS'));
+      },
       credentials: true
-    }));
+    };
+    
+    app.use(cors(corsOptions));
     
     app.use(express.json());
     app.use(cookieParser());

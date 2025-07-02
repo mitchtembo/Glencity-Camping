@@ -3,6 +3,7 @@ import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { QRCodeSVG } from 'qrcode.react';
 import { AlertTriangle, Check } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { API_ENDPOINTS } from '../config/api';
 import axios from 'axios';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -37,7 +38,7 @@ const BookingPage = () => {
   useEffect(() => {
     const fetchAccommodation = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/accommodations/${id}`);
+        const res = await axios.get(API_ENDPOINTS.ACCOMMODATIONS.DETAIL(id));
         setAccommodation(res.data);
       } catch (err) {
         console.error('Error fetching accommodation from API:', err);
@@ -149,7 +150,23 @@ const BookingPage = () => {
       };
 
       try {
-        const res = await axios.post('http://localhost:5000/api/bookings', newBooking);
+        // Check if we have authentication before making the request
+        if (!isAuthenticated) {
+          setValidationErrors(['You must be logged in to make a booking.']);
+          setTimeout(() => {
+            const bookingData = {
+              accommodationId: id,
+              checkIn,
+              checkOut,
+              accommodationName: accommodation.name
+            };
+            localStorage.setItem('pendingBookingData', JSON.stringify(bookingData));
+            navigate(`/login?redirect=/booking/${id}`);
+          }, 2000);
+          return;
+        }
+        
+        const res = await axios.post(API_ENDPOINTS.BOOKINGS.CREATE, newBooking);
 
         const details = {
           accommodationName: accommodation.name,

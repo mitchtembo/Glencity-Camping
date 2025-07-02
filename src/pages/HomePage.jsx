@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { API_ENDPOINTS } from '../config/api';
 import BookingWidget from '../components/BookingWidget';
 import axios from 'axios';
 
@@ -10,7 +11,7 @@ const HomePage = () => {
   useEffect(() => {
     const fetchAccommodations = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/accommodations');
+        const res = await axios.get(API_ENDPOINTS.ACCOMMODATIONS.LIST);
         setAccommodations(res.data);
       } catch (err) {
         console.error('Error fetching accommodations:', err);

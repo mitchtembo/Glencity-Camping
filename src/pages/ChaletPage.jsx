@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { API_ENDPOINTS } from '../config/api';
 import axios from 'axios';
 
 const ChaletPage = () => {
@@ -23,7 +24,7 @@ const ChaletPage = () => {
       }
 
       try {
-        const res = await axios.get(`http://localhost:5000/api/accommodations/${id}`);
+        const res = await axios.get(API_ENDPOINTS.ACCOMMODATIONS.DETAIL(id));
         setChalet(res.data);
       } catch (err) {
         setError('Chalet not found');

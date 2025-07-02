@@ -6,12 +6,7 @@ echo ==============================================
 
 REM Check if .env already exists
 if exist ".env" (
-    echo ⚠️  .env file already exists!
-    set /p overwrite="Do you want to overwrite it? (y/N): "
-    if /i not "%overwrite%"=="y" (
-        echo Setup cancelled.
-        exit /b 0
-    )
+    echo ⚠️  .env file already exists! Overwriting...
 )
 
 REM Copy example file
@@ -42,5 +37,3 @@ echo    - The .env file is already in .gitignore
 echo    - Use different secrets for production
 echo    - Rotate secrets regularly
 echo    - Never share secrets in plain text
-
-pause

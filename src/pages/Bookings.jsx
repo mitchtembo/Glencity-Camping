@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { API_ENDPOINTS } from '../config/api';
 import axios from 'axios';
 
 const Bookings = () => {
@@ -18,7 +19,7 @@ const Bookings = () => {
       }
 
       try {
-        const res = await axios.get('http://localhost:5000/api/bookings/my-bookings');
+        const res = await axios.get(API_ENDPOINTS.BOOKINGS.MY_BOOKINGS);
         setBookings(res.data);
       } catch (err) {
         console.error('Error fetching bookings:', err);

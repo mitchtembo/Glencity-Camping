@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, Calendar, AlertTriangle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { API_ENDPOINTS } from '../config/api';
 import axios from 'axios';
 import { 
   validateBookingDates, 
@@ -34,7 +35,7 @@ const BookingWidget = ({ accommodation }) => {
   useEffect(() => {
     const fetchAccommodations = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/accommodations');
+        const res = await axios.get(API_ENDPOINTS.ACCOMMODATIONS.LIST);
         setAccommodations(res.data);
       } catch (err) {
         console.error('Error fetching accommodations:', err);
